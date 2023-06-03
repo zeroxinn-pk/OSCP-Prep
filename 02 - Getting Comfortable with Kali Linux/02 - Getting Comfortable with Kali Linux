@@ -1,0 +1,126 @@
+Booting Up Kali Linux
+kali@kali:~$ passwd
+kali@kali:~$ whoami
+kali@kali:~$ sudo whoami
+
+
+Basic Linux Commands 
+kali@kali:~$ man ls
+kali@kali:~$ man -k passwd
+kali@kali:~$ man -k '^passwd$'
+kali@kali:~$ man 5 passwd
+kali@kali:~$ apropos partition
+
+
+
+ Listing Files
+kali@kali:~$ ls
+kali@kali:~$ ls /etc/apache2/sites-available/*.conf
+kali@kali:~$ ls -a1
+
+
+
+Moving Around
+kali@kali:~$ cd /usr/share/metasploit-framework/
+kali@kali:/usr/share/metasploit-framework$ pwd
+kali@kali:/usr/share/metasploit-framework$ cd ~
+kali@kali:~$ pwd
+
+
+
+
+Creating Directories 
+kali@kali:~$ mkdir notes
+kali@kali:~$ cd notes/
+kali@kali:~/notes$ mkdir module one
+kali@kali:~/notes$ ls
+kali@kali:~/notes$ rm -rf module/ one/
+kali@kali:~/notes$ mkdir "module one"
+kali@kali:~/notes$ cd module\ one/
+kali@kali:~$ mkdir -p test/{recon,exploit,report}
+kali@kali:~$ ls -1 test/
+
+
+
+
+
+which
+kali@kali:~$ echo $PATH
+kali@kali:~$ which sbd
+
+
+
+
+
+locate 
+kali@kali:~$ sudo updatedb
+kali@kali:~$ locate sbd.exe
+
+
+
+find 
+kali@kali:~$ sudo find / -name sbd*
+
+
+
+
+
+SSH Service 
+kali@kali:~$ sudo systemctl start ssh
+kali@kali:~$ 
+kali@kali:~$ sudo ss -antlp | grep sshd
+kali@kali:~$ sudo systemctl enable ssh
+
+
+
+
+
+HTTP Service 
+kali@kali:~$ sudo systemctl start apache2
+kali@kali:~$ sudo ss -antlp | grep apache
+kali@kali:~$ sudo systemctl enable apache2
+kali@kali:~$ systemctl list-unit-files
+
+
+
+
+apt update
+kali@kali:~$ sudo apt update
+
+
+
+apt-cache search and apt show
+kali@kali:~$ apt-cache search pure-ftpd
+kali@kali:~$ apt show resource-agents
+
+
+
+
+apt install
+kali@kali:~$ sudo apt install pure-ftpd
+
+
+
+
+
+apt remove --purge 
+kali@kali:~$ sudo apt remove --purge pure-ftpd
+
+
+
+
+
+dpkg 
+kali@kali:~$ sudo dpkg -i man-db_2.7.0.2-5_amd64.deb
+
+
+
+
+
+
+
+
+
+
+
+
