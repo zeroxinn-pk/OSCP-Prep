@@ -1,1 +1,5 @@
+Booting Up Kali Linux
 
+kali@kali:~$ passwd
+kali@kali:~$ whoami
+kali@kali:~$ sudo whoami
