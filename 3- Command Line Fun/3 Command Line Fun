@@ -216,5 +216,48 @@ kali@kali:~$ wget -O report_wget.pdf https://www.offensivesecurity.com/reports/p
 
 
 curl 
+kali@kali:~$ curl -o report.pdf https://www.offensivesecurity.com/reports/penetration-testing-sample-report-2013.pdf
+
+
+
+axel
+kali@kali:~$ axel -a -n 20 -o report_axel.pdf https://www.offensivesecurity.com/reports/penetration-testing-sample-report-2013.pdf
+
+
+
+
+
+Bash History Customization 
+kali@kali:~$ export HISTCONTROL=ignoredups
+kali@kali:~$ export HISTIGNORE="&:ls:[bf]g:exit:history"
+kali@kali:~$ mkdir test
+kali@kali:~$ cd test
+kali@kali:~/test$ ls
+kali@kali:~/test$ pwd
+/home/kali/test
+kali@kali:~/test$ ls
+kali@kali:~/test$ history
+kali@kali:~/test$ export HISTTIMEFORMAT='%F %T '
+
+
+
+
+
+Alias
+kali@kali:~$ alias lsa='ls -la'
+kali@kali:~$ lsa
+kali@kali:~$ alias mkdir='ping -c 1 localhost'
+kali@kali:~$ mkdir
+kali@kali:~$ unalias mkdir
+kali@kali:~$ mkdir
+
+
+
+
+
+Persistent Bash Customization 
+kali@kali:~$ cat ~/.bashrc
+
+
 
 
