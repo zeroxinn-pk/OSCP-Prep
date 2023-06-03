@@ -1,0 +1,189 @@
+Intro to Bash Scripting
+kali@kali:~$ cat ./hello-world.sh
+kali@kali:~$ chmod +x hello-world.sh 
+kali@kali:~$ ./hello-world.sh
+
+
+
+Variables
+kali@kali:~$ first_name=Good
+kali@kali:~$ first_name=Good
+kali@kali:~$ last_name=Hacker
+kali@kali:~$ echo $first_name $last_name
+kali@kali:~$ greeting=Hello World
+kali@kali:~$ greeting='Hello World'
+kali@kali:~$ echo $greeting
+Hello World
+kali@kali:~$ greeting2="New $greeting"
+kali@kali:~$ echo $greeting2
+kali@kali:~$ user=$(whoami)
+kali@kali:~$ echo $user
+kali@kali:~$ user2=`whoami`
+kali@kali:~$ echo $user2
+kali@kali:~$ cat ./subshell.sh
+kali@kali:~$ ./subshell.sh
+
+
+
+
+
+
+Arguments
+kali@kali:~$ cat ./arg.sh
+kali@kali:~$ chmod +x ./arg.sh
+kali@kali:~$ ./arg.sh hello there
+
+
+
+
+Reading User Input
+kali@kali:~$ cat ./input.sh
+kali@kali:~$ chmod +x ./input.sh 
+kali@kali:~$ ./input.sh
+kali@kali:~$ cat ./input2.sh
+kali@kali:~$ chmod +x ./input2.sh
+kali@kali:~$ ./input2.sh
+
+
+
+
+
+If, Else, Elif Statements 
+kali@kali:~$ cat ./if.sh
+kali@kali:~$ chmod +x ./if.sh 
+kali@kali:~$ ./if.sh 
+kali@kali:~$ cat ./if2.sh
+kali@kali:~$ chmod +x ./if2.sh
+kali@kali:~$ ./if2.sh
+kali@kali:~$ cat ./else.sh
+kali@kali:~$ chmod +x ./else.sh
+kali@kali:~$ ./else.sh 
+kali@kali:~$ cat ./elif.sh
+kali@kali:~$ chmod +x ./elif.sh
+kali@kali:~$ ./elif.sh
+
+
+
+
+
+
+Boolean Logical Operations 
+kali@kali:~$ user2=kali
+kali@kali:~$ grep $user2 /etc/passwd && echo "$user2 found!"
+kali@kali:~$ user2=bob
+kali@kali:~$ grep $user2 /etc/passwd && echo "$user2 found!"
+kali@kali:~$ echo $user2
+kali@kali:~$ grep $user2 /etc/passwd && echo "$user2 found!" || echo "$user2 not found!"
+kali@kali:~$ cat ./and.sh
+kali@kali:~$ chmod +x ./and.sh
+kali@kali:~$ ./and.sh 
+kali@kali:~$ echo $USER && echo $HOSTNAME
+kali@kali:~$ cat ./or.sh
+kali@kali:~$ chmod +x ./or.sh
+kali@kali:~$ ./or.sh
+kali@kali:~$ echo $USER && echo $HOSTNAME
+
+
+
+
+
+For Loops 
+kali@kali:~$ for ip in $(seq 1 10); do echo 10.11.1.$ip; done
+kali@kali:~$ for i in {1..10}; do echo 10.11.1.$i;done
+
+
+
+
+
+
+While Loops
+kali@kali:~$ cat ./while.sh
+kali@kali:~$ chmod +x ./while.sh
+kali@kali:~$ ./while.sh
+kali@kali:~$ cat ./while2.sh
+kali@kali:~$ chmod +x ./while2.sh
+kali@kali:~$ ./while2.sh 
+
+
+
+
+
+
+Functions 
+kali@kali:~$ cat ./func.sh
+kali@kali:~$ chmod +x ./func.sh
+kali@kali:~$ ./func.sh
+kali@kali:~$ cat ./funcarg.sh
+kali@kali:~$ chmod +x ./funcarg.sh
+kali@kali:~$ ./funcarg.sh 
+kali@kali:~$ cat funcrvalue.sh
+kali@kali:~$ chmod +x ./funcrvalue.sh
+kali@kali:~$ ./funcrvalue.sh
+kali@kali:~$ ./funcrvalue.sh
+kali@kali:~$ cat ./varscope.sh
+kali@kali:~$ chmod +x ./varscope.sh
+kali@kali:~$ ./varscope.sh 
+
+
+
+
+
+Practical Bash Usage – Example 1 
+kali@kali:~$ wget www.megacorpone.com
+kali@kali:~$ ls -l index.html
+kali@kali:~$ grep "href=" index.html
+kali@kali:~$ grep "href=" index.html | grep "\.megacorpone" | grep -v
+"www\.megacorpone\.com" | head
+
+kali@kali:~$ grep "href=" index.html | grep "\.megacorpone" | grep -v
+"www\.megacorpone\.com" | awk -F "http://" '{print $2}'
+
+kali@kali:~$ grep "href=" index.html | grep "\.megacorpone" | grep -v
+"www\.megacorpone\.com" | awk -F "http://" '{print $2}' | cut -d "/" -f 1
+
+kali@kali:~$ grep -o '[^/]*\.megacorpone\.com' index.html | sort -u > list.txt
+kali@kali:~$ cat list.txt
+kali@kali:~$ for url in $(cat list.txt); do host $url; done
+kali@kali:~$ for url in $(cat list.txt); do host $url; done
+
+
+
+
+
+
+
+Practical Bash Usage – Example 2 
+kali@kali:~$ searchsploit afd windows -w -t
+kali@kali:~$ searchsploit afd windows -w -t | grep http | cut -f 2 -d "|"
+
+kali@kali:~$ for e in $(searchsploit afd windows -w -t | grep http | cut -f 2 -d "|");
+do exp_name=$(echo $e | cut -d "/" -f 5) && url=$(echo $e | sed 's/exploits/raw/') &&
+wget -q --no-check-certificate $url -O $exp_name; done
+
+kali@kali:~$ ls -l
+kali@kali:~$ file 17133 
+kali@kali:~$ cat 17133
+kali@kali:~$ cat dlsploits.sh
+kali@kali:~$ chmod +x ./dlsploits.sh
+kali@kali:~$ ./dlsploits.sh
+
+
+
+
+
+Practical Bash Usage – Example 3 
+kali@kali:~$ mkdir temp
+kali@kali:~$ cd temp/
+kali@kali:~/temp$ sudo nmap -A -p80 --open 10.11.1.0/24 -oG nmap-scan_10.11.1.1-254
+kali@kali:~/temp$ cat nmap-scan_10.11.1.1-254
+kali@kali:~/temp$ cat nmap-scan_10.11.1.1-254 | grep 80
+kali@kali:~/temp$ cat nmap-scan_10.11.1.1-254 | grep 80 | grep -v "Nmap"
+kali@kali:~/temp$ cat nmap-scan_10.11.1.1-254 | grep 80 | grep -v "Nmap" | awk '{print $2}'
+kali@kali:~/temp$ for ip in $(cat nmap-scan_10.11.1.1-254 | grep 80 | grep -v "Nmap" |awk '{print $2}'); do cutycapt --url=$ip --out=$ip.png;done
+kali@kali:~/temp$ ls -1 *.png
+kali@kali:~/temp$ cat ./pngtohtml.sh
+kali@kali:~/temp$ chmod +x ./pngtohtml.sh
+kali@kali:~/temp$ ./pngtohtml.sh
+kali@kali:~/temp$ firefox web.html
+
+
