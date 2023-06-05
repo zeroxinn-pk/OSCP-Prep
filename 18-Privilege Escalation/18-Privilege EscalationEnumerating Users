@@ -1,0 +1,115 @@
+Enumerating Users
+C:\Users\student>whoami
+C:\Users\student>net user student
+student@debian:~$ id
+C:\Users\student>net user
+student@debian:~$ cat /etc/passwd
+
+
+
+
+
+Enumerating the Hostname
+C:\Users\student>hostname
+student@debian:~$ hostname
+C:\Users\student>systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
+student@debian:~$ cat /etc/issue
+student@debian:~$ cat /etc/*-release
+student@debian:~$ uname -a
+
+
+
+
+
+Enumerating Running Processes and Services 
+C:\Users\student>tasklist /SVC
+student@debian:~$ ps axu
+
+
+
+
+Enumerating Networking Information
+C:\Users\student>ipconfig /all
+C:\Users\student>route print
+C:\Users\student>netstat -ano
+student@debian:~$ ip a
+student@debian:~$ /sbin/route
+student@debian:~$ ss -anp
+
+
+
+
+
+
+Enumerating Firewall Status and Rules
+C:\Users\student>netsh advfirewall show currentprofile
+C:\Users\student>netsh advfirewall firewall show rule name=all
+c:\Users\student>schtasks /query /fo LIST /v
+student@debian:~$ ls -lah /etc/cron*
+student@debian:~$ cat /etc/crontab
+
+
+
+
+
+Enumerating Installed Applications and Patch Levels
+c:\Users\student>wmic product get name, version, vendor
+c:\Users\student>wmic qfe get Caption, Description, HotFixID, InstalledOn
+student@debian:~$ dpkg -l
+
+
+
+
+
+
+9 Enumerating Readable/Writable Files and Directories 
+c:\Tools\privilege_escalation\SysinternalsSuite>accesschk.exe -uws "Everyone" "C:\Program Files"
+
+PS C:\Tools\privilege_escalation\SysinternalsSuite>Get-ChildItem "C:\Program Files" -
+Recurse | Get-ACL | ?{$_.AccessToString -match "Everyone\sAllow\s\sModify"}
+
+student@debian:~$ find / -writable -type d 2>/dev/null
+
+
+
+
+
+Enumerating Unmounted Disks 
+c:\Users\student>mountvol
+student@debian:~$ cat /etc/fstab
+student@debian:~$ mount
+student@debian:~$ /bin/lsblk
+
+
+
+
+
+
+Enumerating Device Drivers and Kernel Modules
+c:\Users\student>powershell
+
+PS C:\Users\student> driverquery.exe /v /fo csv | ConvertFrom-CSV | Select-Object
+‘Display Name’, ‘Start Mode’, Path
+
+PS C:\Users\student> Get-WmiObject Win32_PnPSignedDriver | Select-Object DeviceName,
+DriverVersion, Manufacturer | Where-Object {$_.DeviceName -like "*VMware*"}
+
+student@debian:~$ lsmod
+student@debian:~$ /sbin/modinfo libata
+
+
+
+
+
+
+Enumerating Binaries That AutoElevate
+
+c:\Users\student>reg query
+HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer
+
+c:\Users\student>reg query
+HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer
+
+student@debian:~$ find / -perm -u=s -type f 2>/dev/null
+
+
