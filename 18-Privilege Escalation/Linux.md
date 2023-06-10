@@ -450,7 +450,7 @@ ssh root@10.10.10.1 -i root_key
 ssh -i root_key -oPubkeyAcceptedKeyTypes=+ssh-rsa -oHostKeyAlgorithms=+ssh-rsa root@10.10.36.3
 ```
 
-## CATEGORY "PASSWORDS & KEYS" - NFS
+## CATEGORY "" - NFS
 ```
 cat /etc/exports
 sudo su
